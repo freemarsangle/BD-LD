@@ -1,0 +1,3689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>亚马逊活动排期工具 Pro</title>
+<style>
+:root {
+  --primary-color: #0071e3;
+  --secondary-color: #34c759;
+  --warning-color: #ff9500;
+  --danger-color: #ff3b30;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --text-tertiary: #a1a1a6;
+  --background: #f5f5f7;
+  --card-background: #ffffff;
+  --border-color: #d2d2d7;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+header {
+  background: var(--card-background);
+  color: var(--text-primary);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 300;
+}
+
+header h1 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+header p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.hbtn {
+  background: rgba(0, 113, 227, 0.1);
+  border: none;
+  color: var(--primary-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hbtn:hover {
+  background: rgba(0, 113, 227, 0.2);
+}
+
+.tabs {
+  display: flex;
+  background: var(--card-background);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 20px;
+  position: sticky;
+  top: 72px;
+  z-index: 200;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab:hover {
+  color: var(--primary-color);
+}
+
+.tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.container {
+  max-width: 100%;
+  padding: 16px 20px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.panel {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+.panel-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0077ed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(0, 113, 227, 0.1);
+  color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 113, 227, 0.2);
+}
+
+.btn-danger {
+  background: rgba(255, 59, 48, 0.1);
+  color: var(--danger-color);
+}
+
+.btn-danger:hover {
+  background: rgba(255, 59, 48, 0.2);
+}
+
+.btn-ghost {
+  background: rgba(29, 29, 31, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-ghost:hover {
+  background: rgba(29, 29, 31, 0.1);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+}
+
+.btn-xs {
+  padding: 4px 8px;
+  font-size: 0.7rem;
+}
+
+input[type=text],
+input[type=date],
+input[type=number],
+select,
+textarea {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s;
+  background: #f9f9f9;
+  font-family: var(--font);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  background: white;
+}
+
+.fg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fg label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-toolbar {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.filter-sep {
+  width: 1px;
+  height: 32px;
+  background: var(--border-color);
+  align-self: center;
+}
+
+.legend-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.legend-bar span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ldot {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.lline {
+  width: 24px;
+  height: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* 纵向日历 */
+.vcal-wrap {
+  overflow: auto;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  background: var(--card-background);
+  max-height: calc(100vh - 300px);
+}
+
+.vcal-tbl {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.vcal-tbl thead th {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #f8f8f9;
+  border: 1px solid var(--border-color);
+  padding: 0;
+  white-space: nowrap;
+}
+
+.vcal-tbl thead th.th-date-corner {
+  position: sticky;
+  left: 0;
+  z-index: 60;
+  background: #f0f4ff;
+  min-width: 80px;
+  width: 80px;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  padding: 6px;
+}
+
+.vcal-tbl thead th.th-link-group {
+  background: #eef2ff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+  padding: 6px 10px;
+  border: 1px solid #c3dafe;
+  cursor: pointer;
+  user-select: none;
+}
+
+.vcal-tbl thead th.th-link-group:hover {
+  background: #e0e7ff;
+}
+
+.th-sku-wrap {
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+}
+
+.th-sku-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.th-sku-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.th-sku-path {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sku-status-bar {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 2px;
+  min-width: 4px;
+}
+
+.vcal-tbl td.td-date {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  padding: 0;
+  width: 80px;
+  min-width: 80px;
+  vertical-align: middle;
+  cursor: default;
+}
+
+.vcal-tbl td.td-date.today-row {
+  background: #f0fff4;
+}
+
+.vcal-tbl td.td-date.weekend-row {
+  background: #f9f9f9;
+}
+
+.vcal-tbl td.td-date.month-start {
+  border-top: 2px solid var(--primary-color);
+}
+
+.date-cell-inner {
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.dc-month {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.dc-day {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.dc-week {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  line-height: 1;
+}
+
+.td-date.today-row .dc-day {
+  color: var(--secondary-color);
+  font-size: 0.95rem;
+}
+
+.td-date.weekend-row .dc-week {
+  color: var(--danger-color);
+}
+
+.vcal-tbl td.ev-cell {
+  border: 1px solid var(--border-color);
+  padding: 3px;
+  vertical-align: top;
+  height: 40px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.1s;
+  user-select: none;
+}
+
+.vcal-tbl td.ev-cell:hover {
+  background: #eef2ff !important;
+}
+
+.vcal-tbl td.ev-cell.today-row {
+  background: #f0fff4;
+}
+
+.vcal-tbl td.ev-cell.weekend-row {
+  background: #f9f9f9;
+}
+
+.vcal-tbl td.ev-cell.selecting {
+  background: #dbeafe !important;
+}
+
+.vcal-tbl td.ev-cell.cross-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--warning-color);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.vcal-tbl td.ev-cell.warn45 {
+  background: #fffaf0 !important;
+}
+
+.vcal-tbl td.ev-cell.over45 {
+  background: #fff5f5 !important;
+}
+
+.ev-blk {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  z-index: 5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.ev-blk:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  z-index: 10;
+}
+
+.ev-blk.span-top,
+.ev-blk.span-mid,
+.ev-blk.span-bot {
+  border-radius: 8px;
+}
+
+.ev-blk .blk-del {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: white;
+  border-radius: 3px;
+  width: 16px;
+  height: 16px;
+  font-size: 0.6rem;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.ev-blk:hover .blk-del {
+  display: flex;
+}
+
+/* 横向时间轴日历 */
+.hcal-wrap {
+  overflow: auto;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  background: #f5f7fb;
+  max-height: calc(100vh - 300px);
+}
+
+.hcal-tbl {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  min-width: max-content;
+  background: transparent;
+}
+
+.hcal-tbl thead th {
+  background: #fff !important;
+  border: 1px solid var(--border-color);
+  padding: 0 4px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  box-sizing: border-box;
+}
+
+.hcal-tbl thead th.sticky-row-1,
+.hcal-tbl thead th.sticky-row-2,
+.hcal-tbl thead th.sticky-row-3,
+.hcal-tbl thead th.sticky-row-4 {
+  position: sticky;
+  z-index: 60;
+  background: #fff !important;
+}
+
+.hcal-tbl thead th.sticky-row-1 { top: 0; height: 32px; line-height: 32px; }
+.hcal-tbl thead th.sticky-row-2 { top: 32px; height: 32px; line-height: 32px; }
+.hcal-tbl thead th.sticky-row-3 { top: 64px; height: 32px; line-height: 32px; }
+.hcal-tbl thead th.sticky-row-4 { top: 96px; height: 38px; line-height: 38px; }
+
+.hcal-tbl thead th.th-left-corner {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 120;
+  background: #fff !important;
+  text-align: left;
+  padding: 0 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  height: 128px;
+  line-height: 128px;
+}
+
+.hcal-tbl thead th.th-month {
+  background: #fff !important;
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.hcal-tbl thead th.th-quarter {
+  background: #fff !important;
+  color: #805ad5;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.hcal-tbl thead th.th-year {
+  background: #fff !important;
+  color: #0071e3;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.hcal-tbl thead th.th-today {
+  background: #fff !important;
+  color: var(--secondary-color);
+  font-weight: 700;
+}
+
+.hcal-tbl thead th.jump-highlight {
+  background: #fff3bf !important;
+  color: #8a5a00 !important;
+  box-shadow: inset 0 0 0 1px #f59e0b;
+}
+
+.hcal-tbl td.jump-highlight {
+  background: #fff8d6 !important;
+}
+
+.hcal-tbl td.left-cell.jump-highlight {
+  background: #fff8d6 !important;
+}
+
+.hcal-tbl td.hcell.jump-highlight {
+  background: #fff8d6 !important;
+}
+
+.hcal-tbl thead th.th-weekend {
+  color: var(--text-tertiary);
+}
+
+.hcal-tbl td.left-cell {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  padding: 8px 10px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+}
+
+.hcal-tbl td.left-cell.activity-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: #fbfbfd;
+}
+
+.hcal-tbl td.left-cell.link-name,
+.hcal-tbl td.left-cell.sku-name {
+  background: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.hcal-tbl td.left-cell.sku-name div > div:first-child {
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+}
+
+.hcal-tbl td.left-cell.sku-name div > div:last-child {
+  font-size: 0.68rem !important;
+}
+
+.hcal-tbl td.hcell {
+  border: 1px solid var(--border-color);
+  padding: 3px;
+  height: 36px;
+  vertical-align: middle;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.1s;
+  user-select: none;
+  min-width: 34px;
+  width: 36px;
+}
+
+.hcal-tbl td.hcell:hover {
+  background: #eef2ff !important;
+}
+
+.hcal-tbl td.hcell.today-col {
+  background: #f0fff4;
+}
+
+.hcal-tbl td.hcell.weekend-col {
+  background: #f9f9f9;
+}
+
+.hcal-tbl td.hcell.cross-link-h {
+  background: rgba(255, 149, 0, 0.06);
+}
+
+.hcal-tbl td.hcell.warn45-h {
+  background: #fffaf0 !important;
+}
+
+.hcal-tbl td.hcell.over45-h {
+  background: #fff5f5 !important;
+}
+
+.hcal-tbl td.hcell.event-cell {
+  background: rgba(0, 113, 227, 0.04);
+}
+
+.hcal-tbl td.hcell.conflict-day,
+.vcal-tbl td.ev-cell.conflict-day {
+  background: #111111 !important;
+}
+
+.hev-blk {
+  position: absolute;
+  inset: 3px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.hev-blk:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  z-index: 10;
+}
+
+.h-span-start { border-radius: 8px 0 0 8px; }
+.h-span-mid { border-radius: 0; }
+.h-span-end { border-radius: 0 8px 8px 0; }
+
+/* 状态卡片 */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.status-card {
+  border-radius: var(--border-radius);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+  background: var(--card-background);
+}
+
+.status-card.safe {
+  border-left: 4px solid var(--secondary-color);
+  background: #f8fff9;
+}
+
+.status-card.warn {
+  border-left: 4px solid var(--warning-color);
+  background: #fffcf5;
+}
+
+.status-card.over {
+  border-left: 4px solid var(--danger-color);
+  background: #fff8f8;
+  animation: pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse {
+  from { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.2); }
+  to { box-shadow: 0 0 0 6px rgba(255, 59, 48, 0); }
+}
+
+.sc-path {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.sc-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.sc-bar-wrap {
+  background: var(--border-color);
+  border-radius: 4px;
+  height: 6px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.sc-bar {
+  height: 6px;
+  border-radius: 4px;
+  transition: width 0.4s;
+}
+
+.sc-bar.safe {
+  background: var(--secondary-color);
+}
+
+.sc-bar.warn {
+  background: var(--warning-color);
+}
+
+.sc-bar.over {
+  background: var(--danger-color);
+}
+
+.sc-nums {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.sc-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.sc-status.safe {
+  color: var(--secondary-color);
+}
+
+.sc-status.warn {
+  color: var(--warning-color);
+}
+
+.sc-status.over {
+  color: var(--danger-color);
+}
+
+/* 统计 */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--primary-color);
+}
+
+.stat-card.g {
+  border-left-color: var(--secondary-color);
+}
+
+.stat-card.o {
+  border-left-color: var(--warning-color);
+}
+
+.stat-card.r {
+  border-left-color: var(--danger-color);
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 4px;
+  line-height: 1;
+}
+
+.stat-sub {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.query-bar {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.query-result {
+  background: linear-gradient(135deg, #e6fffa, #ebf8ff);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #b2f5ea;
+}
+
+.big-num {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+/* 产品树 */
+.cat-node {
+  margin-bottom: 4px;
+}
+
+.cat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f8f8f9;
+  border: 1px solid var(--border-color);
+  transition: background 0.15s;
+}
+
+.cat-row:hover {
+  background: #eef2ff;
+}
+
+.cat-toggle {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--border-color);
+  border: none;
+  cursor: pointer;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.cat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cat-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.cat-badge {
+  font-size: 0.6rem;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 600;
+  background: rgba(0, 113, 227, 0.1);
+  color: var(--primary-color);
+}
+
+.cat-count {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+}
+
+.cat-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.cat-row:hover .cat-actions {
+  opacity: 1;
+}
+
+.cascade-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.cascade-wrap select {
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  min-width: 100px;
+  max-width: 160px;
+  height: 36px;
+}
+
+/* 弹窗 */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  background: var(--card-background);
+  border-radius: 16px;
+  padding: 24px;
+  width: 400px;
+  max-width: 94vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: pop 0.2s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-field {
+  margin-bottom: 14px;
+}
+
+.modal-field label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.modal-field input,
+.modal-field select,
+.modal-field textarea {
+  width: 100%;
+}
+
+.date-preview {
+  background: #f0f4ff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.detail-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.detail-label {
+  color: var(--text-tertiary);
+  font-weight: 500;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+
+.detail-val {
+  color: var(--text-primary);
+  font-weight: 400;
+  flex: 1;
+}
+
+.detail-warn {
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.detail-warn.over {
+  background: #fff5f5;
+  border: 1px solid #ffd6d6;
+  color: var(--danger-color);
+}
+
+.detail-warn.warn {
+  background: #fffaf0;
+  border: 1px solid #ffebcc;
+  color: var(--warning-color);
+}
+
+.import-opt {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.import-opt label {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.import-opt label:hover,
+.import-opt label.checked {
+  border-color: var(--primary-color);
+  background: #f0f4ff;
+}
+
+.opt-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+}
+
+.opt-desc {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  display: block;
+  margin-top: 4px;
+}
+
+/* 上传区域 */
+.upload-area {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: #f9f9f9;
+}
+
+.upload-area:hover {
+  border-color: var(--primary-color);
+  background: #f0f4ff;
+}
+
+.upload-area.dragover {
+  border-color: var(--primary-color);
+  background: #e6f0ff;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.upload-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.upload-hint {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* 提醒设置 */
+.reminder-setting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8f8f9;
+  border-radius: 8px;
+}
+
+.reminder-setting label {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* 活动类型颜色 */
+.event-type-coupon {
+  background: linear-gradient(135deg, #34c759, #28a745);
+}
+
+.event-type-bd {
+  background: linear-gradient(135deg, #ff3b30, #d32f2f);
+}
+
+.event-type-ld {
+  background: linear-gradient(135deg, #ff9500, #e68a00);
+}
+
+.event-type-discount {
+  background: linear-gradient(135deg, #0071e3, #0056b3);
+}
+
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--text-primary);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 9999;
+  max-width: 300px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .filter-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-sep {
+    width: 100%;
+    height: 1px;
+  }
+  
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .import-opt {
+    flex-direction: column;
+  }
+  
+  .modal {
+    width: 90vw;
+    padding: 20px;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📅 亚马逊活动排期工具 Pro</h1>
+    <p>品牌→种类→链接→SKU · 45天规则检测 · 活动提醒 · 表格导入导出</p>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <button class="hbtn" id="view-toggle-btn" onclick="toggleView()">⇄ 切换横向</button>
+    <button class="hbtn" onclick="exportData()">⬇ 导出数据</button>
+    <button class="hbtn" onclick="exportScheduleAsExcel()">📊 导出表格</button>
+    <button class="hbtn" onclick="openMatrixImportModal()">⬆ 导入排期矩阵</button>
+    <button class="hbtn" onclick="openImportModal()">⬆ 导入数据</button>
+    <input type="file" id="imp-file" accept=".json" style="display:none" onchange="doImport(event)"/>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('calendar')">📅 排期日历</div>
+  <div class="tab" onclick="switchTab('stats')">📊 统计查询</div>
+  <div class="tab" onclick="switchTab('products')">🏷️ 产品管理</div>
+</div>
+
+<div class="container">
+
+<!-- Tab 1: 排期日历 -->
+<div class="page active" id="page-calendar">
+  <div class="filter-toolbar">
+    <div class="fg"><label>品牌</label>
+      <select id="f-brand" onchange="onFilterChange('brand')" style="min-width:120px;height:36px;font-size:.85rem"><option value="">全部品牌</option></select>
+    </div>
+    <div class="fg"><label>种类</label>
+      <select id="f-cat" onchange="onFilterChange('cat')" style="min-width:120px;height:36px;font-size:.85rem"><option value="">全部种类</option></select>
+    </div>
+    <div class="fg"><label>链接</label>
+      <select id="f-link" onchange="onFilterChange('link')" style="min-width:130px;height:36px;font-size:.85rem"><option value="">全部链接</option></select>
+    </div>
+    <div class="fg"><label>SKU</label>
+      <select id="f-sku" onchange="onFilterChange('sku')" style="min-width:130px;height:36px;font-size:.85rem"><option value="">全部SKU</option></select>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="clearFilters()">✕ 清除</button>
+    <div class="filter-sep"></div>
+    <div class="fg"><label>跳转日期</label>
+      <input type="date" id="jump-date" onchange="jumpToDate()" style="height:36px;font-size:.85rem"/>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="jumpToToday()">📍 今天</button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span style="font-size:.75rem;color:var(--text-tertiary)">粒度：</span>
+      <select id="timeline-granularity" onchange="setTimelineGranularity()" style="height:32px;font-size:.8rem;padding:0 8px">
+        <option value="year">年</option>
+        <option value="quarter">季</option>
+        <option value="month">月</option>
+        <option value="day" selected>日</option>
+      </select>
+      <span style="font-size:.75rem;color:var(--text-tertiary)">范围：</span>
+      <select id="cal-range" onchange="buildCalendar()" style="height:32px;font-size:.8rem;padding:0 8px">
+        <option value="60">±30天</option>
+        <option value="120">±60天</option>
+        <option value="180" selected>±90天</option>
+        <option value="365">±180天</option>
+      </select>
+      <button class="btn btn-ghost btn-sm" onclick="toggleCalendarDensity()">🗓 切换密度</button>
+    </div>
+  </div>
+
+  <div style="margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="openManualAddModal()">➕ 添加活动</button>
+    <div class="fg" style="margin:0">
+      <label>SKU搜索</label>
+      <input type="text" id="sku-filter-search" placeholder="输入任意关键词/部分SKU名/编码" style="min-width:220px;height:36px;font-size:.85rem" oninput="onSkuSearchInput()" onkeydown="handleSkuSearchKeydown(event)"/>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="runSkuSearch()">🔎 搜索</button>
+    <button class="btn btn-ghost btn-sm" onclick="clearSkuQuickSearch()">✕ 清除SKU</button>
+    <button class="btn btn-ghost btn-sm" onclick="clearFilters()">✕ 清除全部</button>
+    <div class="legend-bar" style="margin-bottom:0">
+      <span><div class="ldot event-type-coupon"></div>Coupon</span>
+      <span><div class="ldot event-type-bd"></div>BD</span>
+      <span><div class="ldot event-type-ld"></div>LD</span>
+      <span><div class="ldot event-type-discount"></div>Discount</span>
+      <span><div class="ldot" style="background:#f0fff4;border:1px solid #d4edda"></div>今天</span>
+    </div>
+  </div>
+
+  <div class="panel" style="padding:0;overflow:hidden">
+    <div id="hcal-container">
+      <div class="hcal-wrap" id="hcal-wrap">
+        <table class="hcal-tbl" id="hcal-tbl"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab 2: 统计查询 -->
+<div class="page" id="page-stats">
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">活动总数</div><div class="stat-value" id="s-total">0</div><div class="stat-sub">已录入</div></div>
+    <div class="stat-card g"><div class="stat-label">活动天数</div><div class="stat-value" id="s-days">0</div><div class="stat-sub">展开不重复</div></div>
+    <div class="stat-card o"><div class="stat-label">SKU数量</div><div class="stat-value" id="s-skus">0</div><div class="stat-sub">末级节点</div></div>
+    <div class="stat-card r"><div class="stat-label">超45天SKU</div><div class="stat-value" id="s-over">0</div><div class="stat-sub">需删减</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">
+      <span>⏱ 各SKU 90天活动天数状态</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <label style="font-size:.75rem;color:var(--text-secondary);font-weight:500">锚点：</label>
+        <input type="date" id="anchor-date" onchange="renderStatusCards()" style="height:32px;font-size:.8rem"/>
+        <button class="btn btn-secondary btn-sm" onclick="setAnchorToday()">今天</button>
+      </div>
+    </div>
+    <div style="font-size:.75rem;color:var(--text-tertiary);margin-bottom:12px">选定日期往前90天内，每个SKU有活动的天数（上限45天）</div>
+    <div class="status-grid" id="status-grid"></div>
+  </div>
+  <div class="query-bar">
+    <div class="fg"><label>📍 锚点日期</label><input type="date" id="q-date" oninput="runQuery()"/></div>
+    <div class="fg"><label>窗口天数</label><input type="number" id="q-days" value="90" min="1" max="365" style="width:70px" oninput="runQuery()"/></div>
+    <div class="fg"><label>筛选SKU</label><div class="cascade-wrap" id="cascade-query"></div></div>
+    <div class="fg"><label>SKU搜索</label><input type="text" id="sku-search" placeholder="输入SKU名称搜索" style="min-width:180px;height:36px;font-size:.85rem" oninput="searchSkuStats()"/></div>
+    <button class="btn btn-ghost btn-sm" onclick="clearSkuSearch()">✕ 清除搜索</button>
+    <div class="query-result" id="q-result"><span style="color:var(--text-tertiary);font-size:.85rem">选择日期 → 统计活动天数</span></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">📈 各SKU活动明细</div>
+    <div id="prod-stats-tbl"></div>
+  </div>
+</div>
+
+<!-- Tab 3: 产品管理 -->
+<div class="page" id="page-products">
+  <div class="panel">
+    <div class="panel-title">
+      <span>➕ 添加节点</span>
+      <button class="btn btn-secondary btn-sm" onclick="openBatchModal()">📋 批量导入SKU</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px">
+      <div class="fg"><label>层级</label>
+        <select id="new-level" onchange="onNewLevelChange()" style="width:120px;height:36px;font-size:.85rem">
+          <option value="brand">品牌</option>
+          <option value="category">种类</option>
+          <option value="link">链接</option>
+          <option value="sku">SKU</option>
+        </select>
+      </div>
+      <div class="fg"><label>父级</label><div class="cascade-wrap" id="cascade-parent-prod" style="min-width:220px"></div></div>
+      <div class="fg"><label>名称</label><input type="text" id="new-name" placeholder="名称" style="min-width:140px"/></div>
+      <div class="fg"><label>颜色</label><input type="color" id="new-color" value="#0071e3" style="width:44px;height:36px;border:1px solid var(--border-color);border-radius:8px;padding:2px;cursor:pointer"/></div>
+      <button class="btn btn-primary" onclick="addNode()">＋ 添加</button>
+    </div>
+    <div style="font-size:.75rem;color:var(--text-tertiary);background:#f8f8f9;border-radius:8px;padding:8px 12px">
+      💡 固定4层：<b>品牌 → 种类 → 链接 → SKU</b>（活动绑定到SKU）
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">
+      <span>📤 表格导入</span>
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('excel-upload').click()">📁 选择文件</button>
+    </div>
+    <div class="upload-area" onclick="document.getElementById('excel-upload').click()">
+      <input type="file" id="excel-upload" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleExcelUpload(event)"/>
+      <div class="upload-icon">📊</div>
+      <div class="upload-text">点击或拖拽文件到此处上传</div>
+      <div class="upload-hint">支持 Excel (.xlsx, .xls) 和 CSV 文件</div>
+      <div class="upload-hint" style="margin-top:4px">格式：品牌,种类,链接,SKU</div>
+    </div>
+    <div id="upload-result" style="font-size:.8rem;margin-top:12px"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">
+      <span>🌳 产品分类树</span>
+      <button class="btn btn-ghost btn-sm" onclick="toggleAllTree()">展开/折叠</button>
+    </div>
+    <div id="cat-tree-root"></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- 手动添加活动弹窗 -->
+<div class="modal-mask" id="modal-manual" style="display:none" onclick="if(event.target===this)closeManualModal()">
+  <div class="modal">
+    <h3>➕ 添加活动</h3>
+    <div class="modal-field">
+      <label>选择SKU *</label>
+      <select id="manual-sku" style="width:100%"><option value="">-- 请选择SKU --</option></select>
+    </div>
+    <div class="modal-field">
+      <label>活动类型 *</label>
+      <select id="manual-type" style="width:100%">
+        <option value="coupon">Coupon</option>
+        <option value="bd">BD</option>
+        <option value="ld">LD</option>
+        <option value="discount">Discount</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>开始日期 *</label>
+      <input type="date" id="manual-start" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>结束日期 *</label>
+      <input type="date" id="manual-end" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>活动名称 *</label>
+      <input type="text" id="manual-name" placeholder="例：Prime Day 闪购 20%off" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>折扣力度</label>
+      <input type="text" id="manual-discount" placeholder="例：8折 / 20% off" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>备注</label>
+      <input type="text" id="manual-note" placeholder="可选" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>操作人</label>
+      <input type="text" id="manual-user" placeholder="你的名字" style="width:100%"/>
+    </div>
+    <div class="reminder-setting">
+      <label for="manual-reminder">活动提醒</label>
+      <label class="switch">
+        <input type="checkbox" id="manual-reminder" checked>
+        <span class="slider"></span>
+      </label>
+      <span style="font-size:.75rem;color:var(--text-tertiary)">活动开始前提醒</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeManualModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmManualAdd()">✓ 确认添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 活动详情弹窗 -->
+<div class="modal-mask" id="modal-detail" style="display:none" onclick="if(event.target===this)closeDetail()">
+  <div class="modal">
+    <h3>📌 活动详情</h3>
+    <div id="detail-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" id="detail-del-btn">删除</button>
+      <button class="btn btn-ghost" onclick="closeDetail()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批量导入SKU弹窗 -->
+<div class="modal-mask" id="modal-batch" style="display:none" onclick="if(event.target===this)closeBatchModal()">
+  <div class="modal" style="width:500px">
+    <h3>📋 批量导入SKU</h3>
+    <div style="font-size:.8rem;color:var(--text-secondary);margin-bottom:12px;background:#f8f8f9;border-radius:8px;padding:10px 12px;line-height:1.8">
+      每行一条，格式：<b>品牌,种类,链接,SKU名称</b><br/>
+      示例：<code style="background:#eef2ff;padding:1px 6px;border-radius:3px">Nike,运动鞋,Air Max,Air Max 270黑色</code><br/>
+      ✅ 支持从Excel直接复制4列粘贴（Tab分隔自动识别）<br/>
+      ✅ 已存在的节点自动复用，不重复创建
+    </div>
+    <div class="modal-field">
+      <label>粘贴数据</label>
+      <textarea id="batch-input" rows="10" style="width:100%;font-size:.8rem;font-family:monospace;resize:vertical" placeholder="品牌,种类,链接,SKU&#10;Nike,运动鞋,Air Max,Air Max 270黑色&#10;Nike,运动鞋,Air Max,Air Max 270白色"></textarea>
+    </div>
+    <div id="batch-preview" style="font-size:.75rem;margin-bottom:10px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeBatchModal()">取消</button>
+      <button class="btn btn-secondary" onclick="previewBatch()">👁 预览</button>
+      <button class="btn btn-primary" onclick="confirmBatch()">✓ 确认导入</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导入数据弹窗 -->
+<div class="modal-mask" id="modal-import" style="display:none" onclick="if(event.target===this)closeImportModal()">
+  <div class="modal">
+    <h3>⬆ 导入数据</h3>
+    <div class="import-opt">
+      <label id="opt-merge-label" class="checked">
+        <input type="radio" name="import-mode" value="merge" checked onchange="updateImportOpts()"/>
+        <div><span class="opt-title">🔀 合并模式</span><span class="opt-desc">新增导入数据，跳过重复ID，保留现有数据</span></div>
+      </label>
+      <label id="opt-overwrite-label">
+        <input type="radio" name="import-mode" value="overwrite" onchange="updateImportOpts()"/>
+        <div><span class="opt-title">♻️ 覆盖模式</span><span class="opt-desc">清空现有数据，完全替换为导入内容</span></div>
+      </label>
+    </div>
+    <div style="font-size:.8rem;color:var(--text-tertiary);background:#f8f8f9;border-radius:8px;padding:8px 12px;margin-bottom:16px" id="import-mode-desc">
+      合并模式：适合多人协作，将同事的排期合并到你的文件中
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeImportModal()">取消</button>
+      <button class="btn btn-primary" onclick="document.getElementById('imp-file').click()">选择文件</button>
+    </div>
+  </div>
+</div>
+
+<!-- 快速添加产品弹窗 -->
+<div class="modal-mask" id="modal-quick-add" style="display:none" onclick="if(event.target===this)closeQuickAddModal()">
+  <div class="modal" style="width:450px">
+    <h3>⚡ 快速添加产品</h3>
+    <div class="modal-field">
+      <label>品牌 *</label>
+      <input type="text" id="quick-brand" placeholder="品牌名称" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>种类 *</label>
+      <input type="text" id="quick-category" placeholder="产品种类" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>链接 *</label>
+      <input type="text" id="quick-link" placeholder="产品链接" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>SKU *</label>
+      <input type="text" id="quick-sku" placeholder="SKU名称" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>活动类型 *</label>
+      <select id="quick-event-type" style="width:100%">
+        <option value="coupon">Coupon</option>
+        <option value="bd">BD</option>
+        <option value="ld">LD</option>
+        <option value="discount">Discount</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>活动名称 *</label>
+      <input type="text" id="quick-event-name" placeholder="活动名称" style="width:100%"/>
+    </div>
+    <div class="modal-field">
+      <label>结束日期</label>
+      <input type="date" id="quick-end-date" style="width:100%"/>
+    </div>
+    <div class="reminder-setting">
+      <label for="quick-reminder">活动提醒</label>
+      <label class="switch">
+        <input type="checkbox" id="quick-reminder" checked>
+        <span class="slider"></span>
+      </label>
+      <span style="font-size:.75rem;color:var(--text-tertiary)">活动开始前提醒</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeQuickAddModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmQuickAdd()">✓ 确认添加</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- 排期矩阵导入弹窗 -->
+<div class="modal-mask" id="modal-matrix-import" style="display:none" onclick="if(event.target===this)closeMatrixImportModal()">
+  <div class="modal" style="width:760px;max-width:96vw">
+    <h3>📥 导入排期矩阵</h3>
+    <div style="font-size:.8rem;color:var(--text-secondary);margin-bottom:12px;background:#f8f8f9;border-radius:8px;padding:10px 12px;line-height:1.7">
+      支持“SKU × 日期矩阵型排期表”：第一列为SKU，第一行为日期，单元格内容为活动类型（如 Coupon / BD / LD / Discount）。系统会自动识别并合并连续相同活动，生成开始日期、结束日期、活动名称和折扣力度，并匹配到下方活动排期表。
+    </div>
+    <div class="upload-area" onclick="document.getElementById('matrix-upload').click()">
+      <input type="file" id="matrix-upload" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleMatrixUpload(event)"/>
+      <div class="upload-icon">📊</div>
+      <div class="upload-text">点击或拖拽排期矩阵文件到此处上传</div>
+      <div class="upload-hint">支持 Excel (.xlsx, .xls) 和 CSV 文件</div>
+      <div class="upload-hint" style="margin-top:4px">格式：第一列 SKU，第一行为日期，单元格为活动类型</div>
+    </div>
+    <div id="matrix-preview" style="font-size:.78rem;margin-top:12px;max-height:260px;overflow:auto"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeMatrixImportModal()">取消</button>
+      <button class="btn btn-secondary" onclick="previewMatrixImport()">👁 预览</button>
+      <button class="btn btn-primary" onclick="confirmMatrixImport()">✓ 确认导入排期</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════════
+//  数据
+// ══════════════════════════════════════════════════════
+let nodes  = [];
+let events = [];
+let calViewMode = 'horizontal';
+let calendarDensity = 'comfortable';
+let treeCollapsed = {};
+let importMode = 'merge';
+let selectedCell = null;
+let pendingMatrixImport = null;
+let conflictDayKeys = new Set();
+
+function getSkuDayConflicts(){
+  const CONFLICT_TYPES = new Set(['bd', 'ld']);
+  const catDayLinkEvents = new Map();
+  
+  events.forEach(ev => {
+    const eventType = (ev.eventType || '').toLowerCase();
+    if(!CONFLICT_TYPES.has(eventType)) return;
+    const s = parseDate(ev.startDate), t = parseDate(ev.endDate || ev.startDate);
+    if(isNaN(s) || isNaN(t)) return;
+    
+    const sku = nodes.find(n => n.id === ev.skuId);
+    if(!sku) return;
+    
+    const linkId = sku.parentId;
+    if(!linkId) return;
+    
+    let catId = null;
+    let current = nodes.find(n => n.id === linkId);
+    while(current){
+      if(current.level === 'category'){
+        catId = current.id;
+        break;
+      }
+      current = nodes.find(n => n.id === current.parentId);
+    }
+    if(!catId) return;
+    
+    for(let d = new Date(s); d <= t; d = addDays(d, 1)){
+      const key = `${catId}|${dateStr(d)}`;
+      const linkEvents = catDayLinkEvents.get(key) || new Map();
+      const eventsInLink = linkEvents.get(linkId) || [];
+      eventsInLink.push({skuId: ev.skuId, eventType});
+      linkEvents.set(linkId, eventsInLink);
+      catDayLinkEvents.set(key, linkEvents);
+    }
+  });
+  
+  const conflictDayKeys = new Set();
+  catDayLinkEvents.forEach((linkEvents, key) => {
+    const linkIds = [...linkEvents.keys()];
+    if(linkIds.length > 1){
+      const [catId, date] = key.split('|');
+      linkIds.forEach(linkId => {
+        const eventsInLink = linkEvents.get(linkId);
+        eventsInLink.forEach(ev => {
+          conflictDayKeys.add(`${ev.skuId}|${date}`);
+        });
+      });
+    }
+  });
+  
+  return conflictDayKeys;
+}
+function getEventSegmentsForSku(skuId){
+  const list = events.filter(e => e.skuId === skuId).slice().sort((a,b) => parseDate(a.startDate) - parseDate(b.startDate) || parseDate(a.endDate || a.startDate) - parseDate(b.endDate || b.startDate));
+  const segments = [];
+  let cur = null;
+  list.forEach(ev => {
+    const s = parseDate(ev.startDate), t = parseDate(ev.endDate || ev.startDate);
+    if(isNaN(s) || isNaN(t)) return;
+    const type = ev.eventType || 'coupon';
+    if(!cur || cur.type !== type || cur.ev.name !== ev.name || (cur.ev.discount || '') !== (ev.discount || '') || (cur.ev.note || '') !== (ev.note || '') || s - cur.end > 86400000){
+      if(cur) segments.push(cur);
+      cur = { ev, type, start: new Date(s), end: new Date(t) };
+    } else {
+      if(t > cur.end) cur.end = new Date(t);
+    }
+  });
+  if(cur) segments.push(cur);
+  return segments;
+}
+
+function save(){
+  localStorage.setItem('aps3_nodes',  JSON.stringify(nodes));
+  localStorage.setItem('aps3_events', JSON.stringify(events));
+}
+function load(){
+  nodes  = JSON.parse(localStorage.getItem('aps3_nodes')  || '[]');
+  events = JSON.parse(localStorage.getItem('aps3_events') || '[]');
+}
+function rebuildConflictIndex(){
+  conflictDayKeys = getSkuDayConflicts();
+}
+function resolveSkuDayConflicts(){
+  rebuildConflictIndex();
+}
+function mergeImportSegments(items){
+  const list = items.map(it => ({...it, startDate: it.startDate, endDate: it.endDate || it.startDate})).sort((a,b) => a.skuId.localeCompare(b.skuId) || a.type.localeCompare(b.type) || a.startDate.localeCompare(b.startDate));
+  const merged = [];
+  list.forEach(it => {
+    const last = merged[merged.length - 1];
+    if(last && last.skuId === it.skuId && last.type === it.type && last.name === it.name && (last.discount || '') === (it.discount || '') && daysBetween(last.endDate, it.startDate) === 1){
+      last.endDate = it.endDate;
+    } else {
+      merged.push({...it});
+    }
+  });
+  return merged;
+}
+function mergeSkuActivities(skuId){
+  const list = events.filter(e => e.skuId === skuId).map(e => ({...e, startDate: e.startDate, endDate: e.endDate || e.startDate})).sort((a,b) => a.startDate.localeCompare(b.startDate) || a.endDate.localeCompare(b.endDate));
+  const merged = [];
+  list.forEach(ev => {
+    const last = merged[merged.length - 1];
+    const same = last && last.eventType === ev.eventType && last.name === ev.name && (last.discount || '') === (ev.discount || '') && (last.note || '') === (ev.note || '') && daysBetween(last.endDate, ev.startDate) === 1;
+    if(same) last.endDate = ev.endDate;
+    else merged.push({...ev});
+  });
+  return merged;
+}
+function upsertMergedActivities(items){
+  items.forEach(it => events.push({id: uid(), skuId: it.skuId, eventType: it.type, name: it.name, discount: it.discount || '', note: it.note || '', operator: 'Excel导入', startDate: it.startDate, endDate: it.endDate, reminder: true, createdAt: new Date().toISOString()}));
+  resolveSkuDayConflicts();
+}
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6) }
+
+// ══════════════════════════════════════════════════════
+//  节点工具
+// ══════════════════════════════════════════════════════
+const LEVEL_NAMES = {brand:'品牌', category:'种类', link:'链接', sku:'SKU'};
+const LEVEL_ORDER = ['brand','category','link','sku'];
+const LEVEL_COLORS = ['#0071e3','#34c759','#805ad5','#ff9500'];
+
+function getChildren(pid){ return nodes.filter(n => n.parentId === (pid || null)) }
+function getSkuNodes(){ return nodes.filter(n => n.level === 'sku') }
+
+function getNodePath(nid){
+  const p = []; let c = nodes.find(n => n.id === nid);
+  while(c){ p.unshift(c.name); c = nodes.find(n => n.id === c.parentId); }
+  return p;
+}
+function getNodeColor(nid){
+  let c = nodes.find(n => n.id === nid);
+  while(c){ if(c.color) return c.color; c = nodes.find(n => n.id === c.parentId); }
+  return '#86868b';
+}
+function getAncestors(nid){
+  const r = []; let c = nodes.find(n => n.id === nid);
+  while(c && c.parentId){ c = nodes.find(n => n.id === c.parentId); if(c) r.unshift(c); }
+  return r;
+}
+function getSkuLink(skuId){
+  const sku = nodes.find(n => n.id === skuId);
+  if(!sku) return null;
+  return nodes.find(n => n.id === sku.parentId) || null;
+}
+
+// ══════════════════════════════════════════════════════
+//  日期工具
+// ══════════════════════════════════════════════════════
+function dateStr(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+function parseDate(s){
+  if(!s) return new Date(NaN);
+  return new Date(String(s).slice(0,10) + 'T12:00:00');
+}
+function addDays(d, n){ const r = new Date(d); r.setDate(r.getDate() + n); return r }
+function daysBetween(a, b){ return Math.round((parseDate(b) - parseDate(a)) / 86400000) }
+function todayStr(){ return dateStr(new Date()) }
+
+// 活动类型定义
+const EVENT_TYPES = {
+  coupon:       { name: 'Coupon',       color: '#34c759', cls: 'event-type-coupon' },
+  promo_basic:  { name: '春季大促',     color: '#34c759', cls: 'event-type-bd' },
+  prime_bd:     { name: 'Prime大促BD',  color: '#805ad5', cls: 'event-type-ld' },
+  bd:           { name: 'BD',           color: '#ff3b30', cls: 'event-type-bd' },
+  ld:           { name: 'LD',           color: '#ff9500', cls: 'event-type-ld' },
+  discount:     { name: 'Discount',     color: '#0071e3', cls: 'event-type-discount' }
+};
+
+// ══════════════════════════════════════════════════════
+//  45天计算
+// ══════════════════════════════════════════════════════
+function calc90Days(skuId, anchorDateStr){
+  const anchor = parseDate(anchorDateStr);
+  const winStart = addDays(anchor, -89);
+  const activeDays = new Set();
+  events.filter(e => e.skuId === skuId).forEach(e => {
+    const s = parseDate(e.startDate), t = parseDate(e.endDate || e.startDate);
+    const os = s < winStart ? winStart : s;
+    const oe = t > anchor ? anchor : t;
+    for(let d = new Date(os); d <= oe; d = addDays(d,1)) activeDays.add(dateStr(d));
+  });
+  return activeDays.size;
+}
+function getSkuStatus(count){
+  if(count >= 45) return 'over';
+  if(count >= 40) return 'warn';
+  return 'safe';
+}
+function formatReadableDate(ds){
+  const d = parseDate(ds);
+  if(isNaN(d)) return ds || '—';
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+}
+function getRecoveryDate(skuId, anchorDateStr){
+  const anchor = parseDate(anchorDateStr || todayStr());
+  const skuEvents = events
+    .filter(e => e.skuId === skuId)
+    .map(e => ({
+      start: parseDate(e.startDate),
+      end: parseDate(e.endDate || e.startDate)
+    }))
+    .filter(ev => !isNaN(ev.start) && !isNaN(ev.end))
+    .sort((a,b) => a.start - b.start || a.end - b.end);
+
+  if(skuEvents.length === 0) return null;
+
+  const activityDays = [];
+  const seenDays = new Set();
+  skuEvents.forEach(ev => {
+    for(let d = new Date(ev.start); d <= ev.end; d = addDays(d, 1)){
+      const ds = dateStr(d);
+      if(!seenDays.has(ds)){
+        seenDays.add(ds);
+        activityDays.push(ds);
+      }
+    }
+  });
+  if(activityDays.length === 0) return null;
+
+  const limit = addDays(anchor, 365);
+  for(let candidate = new Date(anchor); candidate <= limit; candidate = addDays(candidate, 1)){
+    const windowStart = addDays(candidate, -89);
+    let cnt = 0;
+    for(let i = 0; i < activityDays.length; i++){
+      const d = parseDate(activityDays[i]);
+      if(d >= windowStart && d <= candidate) cnt++;
+      if(cnt > 45) break;
+    }
+    if(cnt <= 45) return dateStr(candidate);
+  }
+  return null;
+}
+const STATUS_LABEL = {safe:'✅ 安全', warn:'⚠️ 接近上限', over:'🔴 超限需删减'};
+const STATUS_COLOR = {safe:'#34c759', warn:'#ff9500', over:'#ff3b30'};
+
+// ══════════════════════════════════════════════════════
+//  跨链接同天检测
+// ══════════════════════════════════════════════════════
+function getCrossLinkDates(){
+  const map = {};
+  events.forEach(e => {
+    const link = getSkuLink(e.skuId);
+    if(!link) return;
+    const s = parseDate(e.startDate), t = parseDate(e.endDate || e.startDate);
+    for(let d = new Date(s); d <= t; d = addDays(d,1)){
+      const ds = dateStr(d);
+      if(!map[ds]) map[ds] = new Set();
+      map[ds].add(link.id);
+    }
+  });
+  const result = new Set();
+  Object.entries(map).forEach(([ds, links]) => { if(links.size > 1) result.add(ds); });
+  return result;
+}
+
+// ══════════════════════════════════════════════════════
+//  筛选
+// ══════════════════════════════════════════════════════
+let filters = {brand:'', cat:'', link:'', sku:''};
+
+function getFilteredSkus(){
+  let skus = getSkuNodes();
+  if(filters.sku)  return skus.filter(n => n.id === filters.sku);
+  if(filters.link) return skus.filter(n => n.parentId === filters.link);
+  if(filters.cat){
+    const linkIds = nodes.filter(n => n.parentId === filters.cat && n.level === 'link').map(n => n.id);
+    return skus.filter(n => linkIds.includes(n.parentId));
+  }
+  if(filters.brand){
+    const catIds  = nodes.filter(n => n.parentId === filters.brand && n.level === 'category').map(n => n.id);
+    const linkIds = nodes.filter(n => catIds.includes(n.parentId) && n.level === 'link').map(n => n.id);
+    return skus.filter(n => linkIds.includes(n.parentId));
+  }
+  return skus;
+}
+
+function getSkuSearchMatchedNode(keywordOverride){
+  const keyword = normalizeSkuKey(keywordOverride ?? skuSearchQuery);
+  if(!keyword) return null;
+  const skus = getSkuNodes();
+  return skus.find(sku => {
+    const path = getNodePath(sku.id).join(' › ');
+    return normalizeSkuKey(sku.id).includes(keyword) || normalizeSkuKey(sku.name).includes(keyword) || normalizeSkuKey(path).includes(keyword);
+  }) || null;
+}
+
+function applySkuSearchFilter(){
+  const matched = getSkuSearchMatchedNode();
+  filters.brand = '';
+  filters.cat = '';
+  filters.link = '';
+  filters.sku = matched ? matched.id : '';
+  rebuildFilterDropdowns();
+  buildCalendar();
+}
+
+window.runSkuSearch = function(){
+  const inputEl = document.getElementById('sku-filter-search');
+  skuSearchQuery = inputEl ? inputEl.value.trim() : '';
+  applySkuSearchFilter();
+  if(skuSearchQuery && !getSkuSearchMatchedNode()) toast('⚠️ 未找到匹配的SKU');
+};
+window.handleSkuSearchKeydown = function(event){
+  if(event.key === 'Enter'){
+    event.preventDefault();
+    runSkuSearch();
+  }
+};
+window.onSkuSearchInput = function(){
+  skuSearchQuery = document.getElementById('sku-filter-search').value.trim();
+  if(!skuSearchQuery) applySkuSearchFilter();
+};
+window.clearSkuQuickSearch = function(){
+  skuSearchQuery = '';
+  const inputEl = document.getElementById('sku-filter-search');
+  if(inputEl) inputEl.value = '';
+  filters.sku = '';
+  rebuildFilterDropdowns();
+  buildCalendar();
+};
+
+window.onFilterChange = function(level){
+  filters[level] = document.getElementById('f-' + level).value;
+  if(level === 'brand'){ filters.cat = ''; filters.link = ''; filters.sku = ''; }
+  if(level === 'cat')  { filters.link = ''; filters.sku = ''; }
+  if(level === 'link') { filters.sku = ''; }
+  if(level === 'sku')  { skuSearchQuery = ''; const s = document.getElementById('sku-filter-search'); if(s) s.value = ''; }
+  rebuildFilterDropdowns();
+  buildCalendar();
+};
+
+window.onFilterChange = function(level){
+  filters[level] = document.getElementById('f-' + level).value;
+  if(level === 'brand'){ filters.cat = ''; filters.link = ''; filters.sku = ''; }
+  if(level === 'cat')  { filters.link = ''; filters.sku = ''; }
+  if(level === 'link') { filters.sku = ''; }
+  rebuildFilterDropdowns();
+  buildCalendar();
+};
+
+// ══════════════════════════════════════════════════════
+//  产品管理
+// ══════════════════════════════════════════════════════
+window.onNewLevelChange = function(){
+  const idx = LEVEL_ORDER.indexOf(document.getElementById('new-level').value);
+  buildParentCascade(idx);
+};
+function buildParentCascade(idx){
+  const container = document.getElementById('cascade-parent-prod');
+  if(!container) return;
+  container.innerHTML = '';
+  if(idx === 0){
+    container.innerHTML = '<span style="font-size:.78rem;color:#a0aec0">顶级节点，无需父级</span>';
+    return;
+  }
+  _buildParentLevel(container, null, 0, idx - 1);
+}
+function _buildParentLevel(container, parentId, depth, maxDepth){
+  const children = getChildren(parentId).filter(n => LEVEL_ORDER.indexOf(n.level) === depth);
+  if(children.length === 0) return;
+  const sel = document.createElement('select');
+  sel.style.cssText = 'font-size:.8rem;padding:6px 10px;min-width:100px;max-width:140px;height:30px;border:1px solid #d2d2d7;border-radius:8px;background:#f9f9f9';
+  sel.innerHTML = `<option value="">选择${LEVEL_NAMES[LEVEL_ORDER[depth]]}</option>`
+    + children.map(n => `<option value="${n.id}">${escHtml(n.name)}</option>`).join('');
+  sel.addEventListener('change', () => {
+    while(sel.nextSibling) container.removeChild(sel.nextSibling);
+    if(sel.value && depth < maxDepth) _buildParentLevel(container, sel.value, depth + 1, maxDepth);
+  });
+  container.appendChild(sel);
+}
+function getParentCascadeValue(){
+  const container = document.getElementById('cascade-parent-prod');
+  if(!container) return null;
+  const sels = container.querySelectorAll('select');
+  if(sels.length === 0) return null;
+  return sels[sels.length - 1].value || null;
+}
+
+window.addNode = function(){
+  const level = document.getElementById('new-level').value;
+  const name  = document.getElementById('new-name').value.trim();
+  const color = document.getElementById('new-color').value;
+  const idx   = LEVEL_ORDER.indexOf(level);
+  const parentId = idx === 0 ? null : getParentCascadeValue();
+  if(!name){ toast('⚠️ 请输入名称'); return; }
+  if(idx > 0 && !parentId){ toast(`⚠️ 请选择父级${LEVEL_NAMES[LEVEL_ORDER[idx-1]]}`); return; }
+  if(nodes.find(n => n.parentId === (parentId||null) && n.name === name && n.level === level)){
+    toast('⚠️ 同级下已存在同名节点'); return;
+  }
+  nodes.push({id: uid(), parentId: parentId||null, level, name, color});
+  save(); renderCatTree(); rebuildFilterDropdowns(); buildParentCascade(idx);
+  document.getElementById('new-name').value = '';
+  toast(`✅ 已添加${LEVEL_NAMES[level]}「${name}」`);
+};
+
+window.editNode = function(nodeId){
+  const node = nodes.find(n => n.id === nodeId);
+  if(!node) return;
+  const newName = prompt(`修改${LEVEL_NAMES[node.level]}名称：`, node.name);
+  if(newName === null) return;
+  if(!newName.trim()){ toast('⚠️ 名称不能为空'); return; }
+  node.name = newName.trim();
+  save(); renderCatTree(); rebuildFilterDropdowns(); buildCalendar();
+  toast(`✅ 已重命名为「${node.name}」`);
+};
+
+window.deleteNode = function(nodeId){
+  const node = nodes.find(n => n.id === nodeId);
+  if(!node) return;
+  const allIds = [nodeId];
+  const st = [nodeId];
+  while(st.length){ const c = st.pop(); nodes.filter(n => n.parentId === c).forEach(n => { allIds.push(n.id); st.push(n.id); }); }
+  const evCount    = events.filter(e => allIds.includes(e.skuId)).length;
+  const childCount = allIds.length - 1;
+  if(!confirm(`删除「${node.name}」${childCount > 0 ? `及其下 ${childCount} 个子节点` : ''}${evCount > 0 ? `，同时删除 ${evCount} 个活动` : ''}？`)) return;
+  nodes  = nodes.filter(n => !allIds.includes(n.id));
+  events = events.filter(e => !allIds.includes(e.skuId));
+  rebuildConflictIndex();
+  save(); renderCatTree(); rebuildFilterDropdowns(); buildCalendar(); updateStats();
+  toast(`🗑 已删除「${node.name}」`);
+};
+
+function renderCatTree(){
+  const root = document.getElementById('cat-tree-root');
+  if(!root) return;
+  if(getChildren(null).length === 0){
+    root.innerHTML = '<div style="color:#a0aec0;font-size:.85rem;padding:16px;text-align:center">暂无数据，请先添加品牌</div>';
+    return;
+  }
+  root.innerHTML = renderTreeLevel(null, 0);
+}
+function renderTreeLevel(parentId, depth){
+  return getChildren(parentId).map(node => {
+    const hasChildren = nodes.some(n => n.parentId === node.id);
+    const collapsed   = treeCollapsed[node.id];
+    const color       = node.color || LEVEL_COLORS[depth] || '#86868b';
+    const evCount     = node.level === 'sku' ? events.filter(e => e.skuId === node.id).length : 0;
+    return `<div class="cat-node">
+      <div class="cat-row">
+        ${hasChildren
+          ? `<button class="cat-toggle" onclick="toggleCollapse('${node.id}')">${collapsed ? '▶' : '▼'}</button>`
+          : '<div style="width:18px;flex-shrink:0"></div>'}
+        <div class="cat-dot" style="background:${color}"></div>
+        <span class="cat-name">${escHtml(node.name)}</span>
+        <span class="cat-badge">${LEVEL_NAMES[node.level]}</span>
+        ${evCount > 0 ? `<span class="cat-count">${evCount}个活动</span>` : ''}
+        <div class="cat-actions">
+          <button class="btn btn-ghost btn-xs" onclick="editNode('${node.id}')">✏️</button>
+          <button class="btn btn-danger btn-xs" onclick="deleteNode('${node.id}')">删除</button>
+        </div>
+      </div>
+      ${hasChildren && !collapsed ? `<div class="cat-children">${renderTreeLevel(node.id, depth+1)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+window.toggleCollapse = function(nodeId){
+  treeCollapsed[nodeId] = !treeCollapsed[nodeId];
+  renderCatTree();
+};
+window.toggleAllTree = function(){
+  const anyExpanded = nodes.some(n => nodes.some(c => c.parentId === n.id) && !treeCollapsed[n.id]);
+  nodes.forEach(n => { treeCollapsed[n.id] = anyExpanded; });
+  renderCatTree();
+};
+
+// ══════════════════════════════════════════════════════
+//  日历入口
+// ══════════════════════════════════════════════════════
+let calCenterDate = todayStr();
+let calJumpDate = todayStr();
+let timelineGranularity = 'day';
+let collapsedLinks = new Set();
+let calendarScrollTimer = null;
+
+function buildCalendar(){
+  buildHCal();
+  setTimeout(markJumpDate, 0);
+}
+window.setTimelineGranularity = function(){
+  timelineGranularity = document.getElementById('timeline-granularity').value || 'day';
+  buildCalendar();
+  setTimeout(scrollToJumpDate, 0);
+};
+window.jumpToDate = function(){
+  const v = document.getElementById('jump-date').value;
+  if(v){
+    calCenterDate = dateStr(parseDate(v));
+    calJumpDate = calCenterDate;
+    document.getElementById('jump-date').value = calCenterDate;
+    buildCalendar();
+    setTimeout(() => { scrollToJumpDate(); markJumpDate(); }, 50);
+  }
+};
+window.jumpToToday = function(){
+  calCenterDate = todayStr();
+  calJumpDate = calCenterDate;
+  const jumpEl = document.getElementById('jump-date');
+  if(jumpEl) jumpEl.value = calCenterDate;
+  buildCalendar();
+  setTimeout(() => { scrollToJumpDate(); markJumpDate(); }, 50);
+};
+function markJumpDate(){
+  const target = calJumpDate || calCenterDate || todayStr();
+  document.querySelectorAll('.jump-highlight').forEach(el => {
+    if(!el.classList.contains('th-left-corner')) el.classList.remove('jump-highlight');
+  });
+  const escaped = CSS.escape(target);
+  const cells = document.querySelectorAll(`#hcal-tbl th[data-date="${escaped}"], #hcal-tbl td[data-date="${escaped}"], #vcal-tbl td[data-date="${escaped}"], #hcal-tbl th[title="${escaped}"]`);
+  cells.forEach(el => el.classList.add('jump-highlight'));
+}
+function scrollToJumpDate(){
+  const target = calJumpDate || calCenterDate || todayStr();
+  const wrap = document.getElementById('hcal-wrap');
+  const vWrap = document.querySelector('.vcal-wrap');
+  const activeWrap = document.querySelector('#page-calendar .page.active .vcal-wrap, #page-calendar .page.active .hcal-wrap') || wrap || vWrap;
+  if(!activeWrap) return;
+  const escaped = CSS.escape(target);
+  const cell = document.querySelector(`#hcal-tbl th[data-date="${escaped}"], #hcal-tbl td[data-date="${escaped}"], #vcal-tbl td[data-date="${escaped}"]`);
+  if(!cell) return;
+  const container = cell.closest('.hcal-wrap, .vcal-wrap') || activeWrap;
+  const cRect = container.getBoundingClientRect();
+  const cellRect = cell.getBoundingClientRect();
+  const left = container.scrollLeft + (cellRect.left - cRect.left) - (cRect.width / 2) + (cellRect.width / 2);
+  const top  = container.scrollTop  + (cellRect.top - cRect.top) - (cRect.height / 2) + (cellRect.height / 2);
+  container.scrollTo({ left: Math.max(0, left), top: Math.max(0, top), behavior: 'smooth' });
+}
+function getQuarterKey(ds){
+  const d = parseDate(ds);
+  return `${d.getFullYear()}-Q${Math.floor(d.getMonth()/3)+1}`;
+}
+function getDateRange(){
+  const rangeEl = document.getElementById('cal-range');
+  const half = Math.floor(parseInt(rangeEl ? rangeEl.value : '180', 10) / 2);
+  const center = parseDate(calCenterDate || todayStr());
+  const dates = [];
+  for(let d = addDays(center, -half); d <= addDays(center, half); d = addDays(d,1))
+    dates.push(dateStr(d));
+  return dates;
+}
+
+// ══════════════════════════════════════════════════════
+//  纵向日历
+// ══════════════════════════════════════════════════════
+function buildVCal(){
+  const dates = getDateRange();
+  const skus  = getFilteredSkus();
+  const matchedSku = getSkuSearchMatchedNode();
+  const displaySkus = matchedSku ? skus.filter(s => s.id === matchedSku.id) : skus;
+  const today = todayStr();
+  const crossDates = getCrossLinkDates();
+  const anchor = todayStr();
+  const weekNames = ['日','一','二','三','四','五','六'];
+
+  const linkGroups = [];
+  const seenLinks = new Set();
+  displaySkus.forEach(sku => {
+    const link = getSkuLink(sku.id);
+    const lid  = link ? link.id : '__none__';
+    if(!seenLinks.has(lid)){
+      seenLinks.add(lid);
+      linkGroups.push({linkId: lid, linkName: link ? link.name : '未分组', skus: []});
+    }
+    linkGroups.find(g => g.linkId === lid).skus.push(sku);
+  });
+
+  const cellMap = {};
+  events.forEach(e => {
+    if(!skus.find(s => s.id === e.skuId)) return;
+    const s = parseDate(e.startDate), t = parseDate(e.endDate || e.startDate);
+    for(let d = new Date(s); d <= t; d = addDays(d,1)){
+      const key = e.skuId + '|' + dateStr(d);
+      if(!cellMap[key]) cellMap[key] = [];
+      cellMap[key].push(e);
+    }
+  });
+
+  const skuStatus = {};
+  skus.forEach(s => { skuStatus[s.id] = getSkuStatus(calc90Days(s.id, anchor)); });
+
+  let thead = '<thead><tr>';
+  thead += '<th class="th-date-corner" rowspan="2">日期</th>';
+  linkGroups.forEach(g => {
+    const span = collapsedLinks.has(g.linkId) ? 1 : g.skus.length;
+    thead += `<th class="th-link-group" colspan="${span}" onclick="toggleLinkCollapse('${g.linkId}')" title="点击折叠/展开">
+      ${collapsedLinks.has(g.linkId) ? '▶ ' : '▼ '}${escHtml(g.linkName)}
+      <span style="font-size:.6rem;opacity:.7">(${g.skus.length})</span>
+    </th>`;
+  });
+  thead += '</tr><tr>';
+  linkGroups.forEach(g => {
+    if(collapsedLinks.has(g.linkId)){
+      thead += '<th style="min-width:36px;background:#f0f4ff;border:1px solid #c3dafe;padding:4px;text-align:center"><div style="font-size:.6rem;color:#0071e3;writing-mode:vertical-rl;height:40px;display:flex;align-items:center;justify-content:center">折叠</div></th>';
+    } else {
+      g.skus.forEach(sku => {
+        const color = getNodeColor(sku.id);
+        const st  = skuStatus[sku.id];
+        const cnt = calc90Days(sku.id, anchor);
+        thead += `<th style="min-width:110px;max-width:140px">
+          <div class="th-sku-wrap">
+            <div class="th-sku-dot" style="background:${color}"></div>
+            <div class="th-sku-name" title="${escHtml(sku.name)}">${escHtml(sku.name)}</div>
+            <div class="th-sku-path">${escHtml(getNodePath(sku.id).slice(0,-1).join('›'))}</div>
+            <div class="sku-status-bar" style="background:${STATUS_COLOR[st]};width:${Math.min(cnt/45*100,100)}%" title="${cnt}天"></div>
+          </div>
+        </th>`;
+      });
+    }
+  });
+  thead += '</tr></thead>';
+
+  let tbody = '<tbody>';
+  let prevMonth = '';
+  dates.forEach(ds => {
+    const d = parseDate(ds);
+    const isToday   = ds === today;
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    const month = ds.slice(0,7);
+    const isMonthStart = month !== prevMonth;
+    prevMonth = month;
+    const isJump = ds === (calJumpDate || calCenterDate || today);
+    const rowClass = isToday ? 'today-row' : isWeekend ? 'weekend-row' : '';
+
+    let tr = '<tr>';
+    tr += `<td class="td-date ${rowClass}${isMonthStart ? ' month-start' : ''}${isJump ? ' jump-highlight' : ''}">
+      <div class="date-cell-inner">
+        ${isMonthStart ? `<div class="dc-month">${d.getMonth()+1}月</div>` : ''}
+        <div class="dc-day">${d.getDate()}</div>
+        <div class="dc-week">${weekNames[d.getDay()]}</div>
+      </div>
+    </td>`;
+
+    linkGroups.forEach(g => {
+      if(collapsedLinks.has(g.linkId)){
+        const hasAny = g.skus.some(sku => (cellMap[sku.id+'|'+ds]||[]).length > 0);
+        tr += `<td class="ev-cell ${rowClass} ${ds === (calJumpDate || calCenterDate || today) ? 'jump-highlight' : ''}" style="${hasAny ? 'background:#eef2ff' : ''}">
+          ${hasAny ? '<div style="width:6px;height:6px;border-radius:50%;background:#0071e3;margin:auto;margin-top:8px"></div>' : ''}
+        </td>`;
+      } else {
+        g.skus.forEach(sku => {
+          const cellEvs = cellMap[sku.id+'|'+ds] || [];
+          const isCross = crossDates.has(ds);
+          const st = skuStatus[sku.id];
+          let cellClass = 'ev-cell ' + rowClass;
+          if(isJump) cellClass += ' jump-highlight';
+          if(isCross) cellClass += ' cross-link';
+          if(st === 'over') cellClass += ' over45';
+          else if(st === 'warn') cellClass += ' warn45';
+
+          let cellContent = '';
+          if(cellEvs.length > 0){
+            const ev = cellEvs[0];
+            const evColor = conflictDayKeys.has(`${sku.id}|${ds}`) ? '#111111' : getEventColor(ev);
+            const segs = getEventSegmentsForSku(sku.id).filter(seg => ds >= dateStr(seg.start) && ds <= dateStr(seg.end) && seg.ev.id === ev.id);
+            const isStart = segs.length ? dateStr(segs[0].start) === ds : ev.startDate === ds;
+            const isEnd   = segs.length ? dateStr(segs[0].end) === ds : (ev.endDate || ev.startDate) === ds;
+            let blkClass  = 'ev-blk';
+            if(isStart && !isEnd)  blkClass += ' span-top';
+            else if(!isStart && !isEnd) blkClass += ' span-mid';
+            else if(!isStart && isEnd)  blkClass += ' span-bot';
+            cellContent = `<div class="${blkClass}" style="background:${evColor}" onclick="event.stopPropagation();showDetail('${ev.id}')" title="${escHtml(ev.name)}">${isStart ? escHtml(ev.name) : ''}</div>`;
+          }
+          tr += `<td class="${cellClass}" data-sku="${sku.id}" data-date="${ds}" onclick="handleCellClick(event, '${sku.id}', '${ds}')">${cellContent}</td>`;
+        });
+      }
+    });
+    tr += '</tr>';
+    tbody += tr;
+  });
+  tbody += '</tbody>';
+
+  document.getElementById('vcal-tbl').innerHTML = thead + tbody;
+}
+
+// ══════════════════════════════════════════════════════
+//  横向时间轴日历
+// ══════════════════════════════════════════════════════
+function buildHCal(){
+  const dates = getDateRange();
+  const skus  = getFilteredSkus();
+  const today = todayStr();
+  const crossDates = getCrossLinkDates();
+  const anchor = todayStr();
+  const weekNames = ['日','一','二','三','四','五','六'];
+  const jumpDate = calJumpDate || calCenterDate || today;
+  const jumpQuarter = getQuarterKey(jumpDate);
+
+  const granularity = timelineGranularity || 'day';
+  const displayDates = (() => {
+    if(granularity === 'year'){
+      const map = new Map();
+      dates.forEach(ds => {
+        const y = ds.slice(0,4);
+        if(!map.has(y)) map.set(y, {key:y, label:`${y}年`, dates:[]});
+        map.get(y).dates.push(ds);
+      });
+      return [...map.values()];
+    }
+    if(granularity === 'quarter'){
+      const map = new Map();
+      dates.forEach(ds => {
+        const d = parseDate(ds);
+        const key = `${d.getFullYear()}-Q${Math.floor(d.getMonth()/3)+1}`;
+        if(!map.has(key)) map.set(key, {key, label:`${key.replace('-Q','年第')}季`, dates:[]});
+        map.get(key).dates.push(ds);
+      });
+      return [...map.values()];
+    }
+    if(granularity === 'month'){
+      const map = new Map();
+      dates.forEach(ds => {
+        const key = ds.slice(0,7);
+        if(!map.has(key)) map.set(key, {key, label:key.replace('-', '/'), dates:[]});
+        map.get(key).dates.push(ds);
+      });
+      return [...map.values()];
+    }
+    return dates.map(ds => ({key: ds, label: ds, dates:[ds]}));
+  })();
+
+  const dayMeta = dates.map(ds => {
+    const d = parseDate(ds);
+    return {
+      ds,
+      d,
+      year: String(d.getFullYear()),
+      month: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`,
+      quarter: `${d.getFullYear()}-Q${Math.floor(d.getMonth()/3)+1}`,
+      isToday: ds === today,
+      isWeekend: d.getDay() === 0 || d.getDay() === 6
+    };
+  });
+
+  const groupRuns = (items, keyFn, labelFn) => {
+    const runs = [];
+    let cur = null;
+    items.forEach((item, idx) => {
+      const key = keyFn(item);
+      if(!cur || cur.key !== key){
+        if(cur) runs.push({label: labelFn(cur.key), span: cur.span});
+        cur = {key, span: 1};
+      } else cur.span++;
+      if(idx === items.length - 1 && cur) runs.push({label: labelFn(cur.key), span: cur.span});
+    });
+    return runs;
+  };
+
+  const yearRuns = groupRuns(dayMeta, x => x.year, x => `${x}年`);
+  const quarterRuns = groupRuns(dayMeta, x => x.quarter, x => `${x.replace('-Q', '年第')}季`);
+  const monthRuns = groupRuns(dayMeta, x => x.month, x => x.replace('-', '/'));
+
+
+
+  const linkGroups = [];
+  const seenLinks = new Set();
+  skus.forEach(sku => {
+    const link = getSkuLink(sku.id);
+    const lid  = link ? link.id : '__none__';
+    if(!seenLinks.has(lid)){
+      seenLinks.add(lid);
+      linkGroups.push({linkId: lid, linkName: link ? link.name : '未分组', skus: []});
+    }
+    linkGroups.find(g => g.linkId === lid).skus.push(sku);
+  });
+
+  const cellMap = {};
+  events.forEach(e => {
+    if(!skus.find(s => s.id === e.skuId)) return;
+    const s = parseDate(e.startDate), t = parseDate(e.endDate || e.startDate);
+    for(let d = new Date(s); d <= t; d = addDays(d,1)){
+      const key = e.skuId + '|' + dateStr(d);
+      if(!cellMap[key]) cellMap[key] = [];
+      cellMap[key].push(e);
+    }
+  });
+
+  const skuStatus = {};
+  skus.forEach(s => { skuStatus[s.id] = getSkuStatus(calc90Days(s.id, anchor)); });
+
+  let thead = '<thead>';
+  if(granularity === 'year'){
+    thead += '<tr><th class="th-left-corner sticky-row-1" rowspan="2">活动</th>';
+    yearRuns.forEach(h => thead += `<th class="th-year sticky-row-1 ${h.key === jumpDate.slice(0,4) ? 'jump-highlight' : ''}" colspan="${h.span}">${h.label}</th>`);
+    thead += '</tr><tr>';
+    displayDates.forEach(g => {
+      thead += `<th class="${g.dates.some(ds => ds === today) ? 'th-today' : ''} sticky-row-2 ${g.key === jumpDate.slice(0,4) ? 'jump-highlight' : ''}" title="${g.key}">${g.label}</th>`;
+    });
+    thead += '</tr></thead>';
+  } else if(granularity === 'quarter'){
+    thead += '<tr><th class="th-left-corner sticky-row-1" rowspan="2">活动</th>';
+    quarterRuns.forEach(h => thead += `<th class="th-quarter sticky-row-1 ${jumpQuarter === h.key ? 'jump-highlight' : ''}" colspan="${h.span}">${h.label}</th>`);
+    thead += '</tr><tr>';
+    displayDates.forEach(g => {
+      thead += `<th class="${g.dates.some(ds => ds === today) ? 'th-today' : ''} sticky-row-2 ${g.key === jumpQuarter ? 'jump-highlight' : ''}" title="${g.key}">${g.label}</th>`;
+    });
+    thead += '</tr></thead>';
+  } else if(granularity === 'month'){
+    thead += '<tr><th class="th-left-corner sticky-row-1" rowspan="2">活动</th>';
+    monthRuns.forEach(h => thead += `<th class="th-month sticky-row-1" colspan="${h.span}">${h.label}</th>`);
+    thead += '</tr><tr>';
+    displayDates.forEach(g => {
+      const d = parseDate(g.dates[0]);
+      const isToday = g.dates.includes(today);
+      thead += `<th class="${isToday ? 'th-today' : ''} sticky-row-2" title="${g.key}">${g.key.replace('-', '/')}</th>`;
+    });
+    thead += '</tr></thead>';
+  } else {
+    thead += '<tr><th class="th-left-corner sticky-row-1" rowspan="4">活动</th>';
+    yearRuns.forEach(h => thead += `<th class="th-year sticky-row-1" colspan="${h.span}">${h.label}</th>`);
+    thead += '</tr><tr>';
+    quarterRuns.forEach(h => thead += `<th class="th-quarter sticky-row-2" colspan="${h.span}">${h.label}</th>`);
+    thead += '</tr><tr>';
+    monthRuns.forEach(h => thead += `<th class="th-month sticky-row-3" colspan="${h.span}">${h.label}</th>`);
+    thead += '</tr><tr>';
+    dayMeta.forEach(meta => {
+      thead += `<th class="${meta.isToday ? 'th-today' : meta.isWeekend ? 'th-weekend' : ''} sticky-row-4" data-date="${meta.ds}" title="${meta.ds}">
+        <div style="font-size:.55rem;line-height:1.1">${String(meta.d.getFullYear()).slice(0,4)}/${String(meta.d.getMonth()+1).padStart(2,'0')}</div>
+        <div style="font-size:.43rem;color:#a0aec0;line-height:1">${String(meta.d.getDate()).padStart(2,'0')}</div>
+      </th>`;
+    });
+    thead += '</tr></thead>';
+  }
+
+  let tbody = '<tbody>';
+  linkGroups.forEach(g => {
+    const toggleTxt = collapsedLinks.has(g.linkId) ? '▶' : '▼';
+    tbody += `<tr><td class="left-cell activity-name" onclick="toggleLinkCollapse('${g.linkId}')">${toggleTxt} ${escHtml(g.linkName)} <span style="color:#a0aec0;font-size:.65rem">(${g.skus.length}个SKU)</span></td>${displayDates.map(() => '<td class="hcell"></td>').join('')}</tr>`;
+    if(!collapsedLinks.has(g.linkId)){
+      g.skus.forEach(sku => {
+        const color = getNodeColor(sku.id);
+        const st = skuStatus[sku.id];
+        const cnt = calc90Days(sku.id, anchor);
+        const barW = Math.min(cnt / 45 * 100, 100);
+        tbody += `<tr><td class="left-cell sku-name" title="${escHtml(getNodePath(sku.id).join(' › '))}">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:7px;height:7px;border-radius:50%;background:${color};flex-shrink:0"></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1">
+              <div style="font-size:0.9rem;font-weight:700;text-align:center">${escHtml(sku.name)}</div>
+              <div style="font-size:0.68rem;color:#a0aec0;text-align:center">${cnt}天/90天</div>
+              <div style="background:#e2e8f0;border-radius:3px;height:3px;margin-top:2px;overflow:hidden;width:100%">
+                <div style="width:${barW}%;height:3px;background:${STATUS_COLOR[st]};border-radius:3px"></div>
+              </div>
+            </div>
+          </div>
+        </td>`;
+        if(timelineGranularity === 'day'){
+          const segments = getEventSegmentsForSku(sku.id);
+          const map = new Map();
+          segments.forEach(seg => {
+            for(let d = new Date(seg.start); d <= seg.end; d = addDays(d, 1)) map.set(dateStr(d), seg);
+          });
+          
+          for(let i = 0; i < dates.length; i++){
+            const ds = dates[i];
+            const meta = dayMeta[i];
+            const seg = map.get(ds);
+            let cellClass = 'hcell';
+            if(meta?.isToday) cellClass += ' today-col';
+            else if(meta?.isWeekend) cellClass += ' weekend-col';
+            if(crossDates.has(ds)) cellClass += ' cross-link-h';
+            if(st === 'over') cellClass += ' over45-h';
+            else if(st === 'warn') cellClass += ' warn45-h';
+            if(conflictDayKeys.has(`${sku.id}|${ds}`)) cellClass += ' conflict-day';
+            
+            if(seg){
+              const isConflict = conflictDayKeys.has(`${sku.id}|${ds}`);
+              if(isConflict){
+                const conflictEvents = cellMap[sku.id + '|' + ds] || [];
+                const labels = conflictEvents.map(e => escHtml(e.name)).join('\n');
+                const firstEv = conflictEvents[0];
+                tbody += `<td class="${cellClass}" data-date="${ds}" onclick="handleCellClick(event, '${sku.id}', '${ds}')"><div class="hev-blk" style="background:#111111;color:white;font-size:0.55rem;white-space:normal;line-height:1.2;padding:2px 4px" onclick="event.stopPropagation();showDetail('${firstEv.id}')" title="${labels}">${conflictEvents.length > 1 ? '冲突' : escHtml(firstEv.name)}</div></td>`;
+              } else {
+                let actualSpan = 1;
+                let j = i + 1;
+                while(j < dates.length){
+                  const nextDs = dates[j];
+                  const nextSeg = map.get(nextDs);
+                  if(nextSeg && nextSeg.ev.id === seg.ev.id && !conflictDayKeys.has(`${sku.id}|${nextDs}`)){
+                    actualSpan++;
+                    j++;
+                  } else {
+                    break;
+                  }
+                }
+                
+                const evColor = getEventColor(seg.ev);
+                const label = escHtml(seg.ev.name);
+                
+                tbody += `<td class="${cellClass}" colspan="${actualSpan}" data-date="${ds}" onclick="handleCellClick(event, '${sku.id}', '${ds}')"><div class="hev-blk" style="background:${evColor};display:flex;align-items:center;justify-content:center" onclick="event.stopPropagation();showDetail('${seg.ev.id}')" title="${escHtml(seg.ev.name)}">${label}</div></td>`;
+                i += actualSpan - 1;
+              }
+            } else {
+              tbody += `<td class="${cellClass}" data-date="${ds}" onclick="handleCellClick(event, '${sku.id}', '${ds}')"></td>`;
+            }
+          }
+        } else {
+          displayDates.forEach(group => {
+            const groupDates = group.dates;
+            const groupEvs = groupDates.flatMap(ds => cellMap[sku.id + '|' + ds] || []);
+            let cellClass = 'hcell';
+            if(groupEvs.length > 0) cellClass += ' event-cell';
+            let cellContent = '';
+            if(groupEvs.length > 0){
+              const ev = groupEvs[0];
+              const hasConflict = groupDates.some(ds => conflictDayKeys.has(`${sku.id}|${ds}`));
+              const evColor = hasConflict ? '#111111' : getEventColor(ev);
+              const label = escHtml(group.label);
+              cellContent = `<div class="hev-blk" style="background:${evColor}" onclick="event.stopPropagation();showDetail('${ev.id}')" title="${escHtml(ev.name)}">${label}</div>`;
+            }
+            tbody += `<td class="${cellClass}" onclick="${groupDates[0] ? `handleCellClick(event, '${sku.id}', '${groupDates[0]}')` : ''}">${cellContent}</td>`;
+          });
+        }
+        tbody += '</tr>';
+      });
+    }
+  });
+  tbody += '</tbody>';
+  document.getElementById('hcal-tbl').innerHTML = thead + tbody;
+  setTimeout(syncTimelineSticky, 0);
+}
+
+window.toggleCalendarDensity = function(){
+  calendarDensity = calendarDensity === 'comfortable' ? 'compact' : 'comfortable';
+  document.getElementById('hcal-wrap').style.maxHeight = calendarDensity === 'comfortable' ? 'calc(100vh - 300px)' : 'calc(100vh - 240px)';
+  toast(calendarDensity === 'comfortable' ? '已切换为舒适密度' : '已切换为紧凑密度');
+  buildCalendar();
+};
+window.syncTimelineSticky = function(){
+  const wrap = document.getElementById('hcal-wrap');
+  const head = document.querySelector('#hcal-tbl thead');
+  if(wrap && head){
+    head.style.position = 'sticky';
+    head.style.top = '0';
+    head.style.zIndex = '90';
+  }
+};
+
+// ══════════════════════════════════════════════════════
+//  链接折叠
+// ══════════════════════════════════════════════════════
+window.toggleLinkCollapse = function(linkId){
+  if(collapsedLinks.has(linkId)) collapsedLinks.delete(linkId);
+  else collapsedLinks.add(linkId);
+  buildCalendar();
+};
+window.clearFilters = function(){
+  filters = {brand:'', cat:'', link:'', sku:''};
+  skuSearchQuery = '';
+  const s = document.getElementById('sku-filter-search');
+  if(s) s.value = '';
+  rebuildFilterDropdowns();
+  buildCalendar();
+};
+
+// ══════════════════════════════════════════════════════
+//  日历单元格点击 - 快速添加活动
+// ══════════════════════════════════════════════════════
+function handleCellClick(event, skuId, dateStr){
+  if(event.target.closest('.ev-blk') || event.target.closest('.hev-blk') || event.target.closest('.blk-del')) return;
+  selectedCell = { skuId, date: dateStr };
+  const skus  = getSkuNodes();
+  const hasSku = nodes.find(n => n.id === skuId && n.level === 'sku');
+  if(hasSku){
+    openManualAddWithDate(skuId, dateStr);
+  } else {
+    openQuickAddModalWithSku(skuId, dateStr);
+  }
+}
+
+window.openManualAddWithDate = function(skuId, startDate){
+  const skus = getSkuNodes();
+  const sel = document.getElementById('manual-sku');
+  sel.innerHTML = '<option value="">-- 请选择SKU --</option>'
+    + skus.map(s => `<option value="${s.id}"${s.id === skuId ? ' selected' : ''}>${escHtml(getNodePath(s.id).join(' › '))}</option>`).join('');
+  document.getElementById('manual-type').value     = 'coupon';
+  document.getElementById('manual-start').value    = startDate || todayStr();
+  document.getElementById('manual-end').value      = startDate || todayStr();
+  document.getElementById('manual-name').value     = '';
+  document.getElementById('manual-discount').value = '';
+  document.getElementById('manual-note').value     = '';
+  document.getElementById('manual-user').value     = localStorage.getItem('aps_user') || '';
+  document.getElementById('manual-reminder').checked = true;
+  document.getElementById('modal-manual').style.display = 'flex';
+  setTimeout(() => document.getElementById('manual-name').focus(), 100);
+};
+
+// ══════════════════════════════════════════════════════
+//  手动添加活动
+// ══════════════════════════════════════════════════════
+window.openManualAddModal = function(){
+  const skus = getSkuNodes();
+  if(skus.length === 0){ toast('⚠️ 请先在「产品管理」中添加SKU'); return; }
+  openManualAddWithDate('', todayStr());
+};
+window.closeManualModal = function(){
+  document.getElementById('modal-manual').style.display = 'none';
+};
+window.confirmManualAdd = function(){
+  const skuId    = document.getElementById('manual-sku').value;
+  const eventType = document.getElementById('manual-type').value;
+  const start    = document.getElementById('manual-start').value;
+  const end      = document.getElementById('manual-end').value;
+  const name     = document.getElementById('manual-name').value.trim();
+  const discount = document.getElementById('manual-discount').value.trim();
+  const note     = document.getElementById('manual-note').value.trim();
+  const operator = document.getElementById('manual-user').value.trim() || '匿名';
+  const reminder = document.getElementById('manual-reminder').checked;
+  if(!skuId)       { toast('⚠️ 请选择SKU'); return; }
+  if(!start)       { toast('⚠️ 请选择开始日期'); return; }
+  if(!end)         { toast('⚠️ 请选择结束日期'); return; }
+  if(!name)        { toast('⚠️ 请输入活动名称'); return; }
+  if(end < start)  { toast('⚠️ 结束日期不能早于开始日期'); return; }
+  localStorage.setItem('aps_user', operator);
+  const ev = { id: uid(), skuId, eventType, name, discount, note, operator, startDate: start, endDate: end, reminder, createdAt: new Date().toISOString() };
+  events.push(ev);
+  resolveSkuDayConflicts();
+  events.sort((a,b) => a.startDate.localeCompare(b.startDate));
+  save();
+  closeManualModal();
+  buildCalendar();
+  updateStats();
+  const cnt = calc90Days(skuId, todayStr());
+  const st  = getSkuStatus(cnt);
+  if(st === 'over')     toast(`🔴 已添加，但该SKU 90天活动已达 ${cnt} 天，超过45天限制！`);
+  else if(st === 'warn') toast(`⚠️ 已添加，该SKU 90天活动已达 ${cnt} 天，接近上限`);
+  else toast(`✅ 已添加「${name}」(${daysBetween(start, end)+1}天)`);
+  if(reminder) setupReminder(ev);
+};
+
+// ══════════════════════════════════════════════════════
+//  活动详情
+// ══════════════════════════════════════════════════════
+window.showDetail = function(evId){
+  const ev  = events.find(e => e.id === evId);
+  if(!ev) return;
+  const sku  = nodes.find(n => n.id === ev.skuId);
+  const days = daysBetween(ev.startDate, ev.endDate || ev.startDate) + 1;
+  const cnt  = calc90Days(ev.skuId, todayStr());
+  const st   = getSkuStatus(cnt);
+  const typeLabel = ev.eventType && EVENT_TYPES[ev.eventType] ? EVENT_TYPES[ev.eventType].name : '未分类';
+  let warnHtml = '';
+  if(st === 'over') warnHtml = `<div class="detail-warn over">🔴 该SKU 90天活动已达 <b>${cnt} 天</b>，超过45天限制，建议删减</div>`;
+  else if(st === 'warn') warnHtml = `<div class="detail-warn warn">⚠️ 该SKU 90天活动已达 <b>${cnt} 天</b>，接近45天上限</div>`;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">活动名称</span><span class="detail-val"><b>${escHtml(ev.name)}</b></span></div>
+    <div class="detail-row"><span class="detail-label">活动类型</span><span class="detail-val">${escHtml(typeLabel)}</span></div>
+    <div class="detail-row"><span class="detail-label">SKU</span><span class="detail-val">${escHtml(sku ? sku.name : '—')}</span></div>
+    <div class="detail-row"><span class="detail-label">路径</span><span class="detail-val" style="font-size:.75rem;color:#a0aec0">${escHtml(getNodePath(ev.skuId).join(' › '))}</span></div>
+    <div class="detail-row"><span class="detail-label">开始日期</span><span class="detail-val">${ev.startDate}</span></div>
+    <div class="detail-row"><span class="detail-label">结束日期</span><span class="detail-val">${ev.endDate || ev.startDate}</span></div>
+    <div class="detail-row"><span class="detail-label">活动天数</span><span class="detail-val"><b style="color:#0071e3">${days} 天</b></span></div>
+    <div class="detail-row"><span class="detail-label">折扣力度</span><span class="detail-val">${escHtml(ev.discount || '—')}</span></div>
+    <div class="detail-row"><span class="detail-label">备注</span><span class="detail-val">${escHtml(ev.note || '—')}</span></div>
+    <div class="detail-row"><span class="detail-label">操作人</span><span class="detail-val">${escHtml(ev.operator || '—')}</span></div>
+    <div class="detail-row"><span class="detail-label">提醒</span><span class="detail-val">${ev.reminder !== false ? '✅ 已开启' : '— 未开启'}</span></div>
+    <div class="detail-row"><span class="detail-label">创建时间</span><span class="detail-val" style="font-size:.75rem;color:#a0aec0">${new Date(ev.createdAt).toLocaleString('zh-CN')}</span></div>
+    ${warnHtml}`;
+  document.getElementById('detail-del-btn').onclick = () => { deleteEvent(evId); closeDetail(); };
+  document.getElementById('modal-detail').style.display = 'flex';
+};
+window.closeDetail = function(){ document.getElementById('modal-detail').style.display = 'none'; };
+
+// ══════════════════════════════════════════════════════
+//  删除活动
+// ══════════════════════════════════════════════════════
+window.deleteEvent = function(evId){
+  const ev = events.find(e => e.id === evId);
+  if(!ev) return;
+  const sameSkuEvents = events
+    .filter(e => e.skuId === ev.skuId && e.eventType === ev.eventType && e.name === ev.name && (e.discount || '') === (ev.discount || '') && (e.note || '') === (ev.note || ''))
+    .map(e => ({ ev: e, start: parseDate(e.startDate), end: parseDate(e.endDate || e.startDate) }))
+    .filter(x => !isNaN(x.start) && !isNaN(x.end))
+    .sort((a,b) => a.start - b.start || a.end - b.end);
+  const group = sameSkuEvents.find(x => x.ev.id === evId);
+  if(!group) return;
+  let start = new Date(group.start);
+  let end = new Date(group.end);
+  let changed = true;
+  while(changed){
+    changed = false;
+    sameSkuEvents.forEach(x => {
+      if(x.ev.id === evId) return;
+      const overlap = !(x.end < addDays(start, -1) || x.start > addDays(end, 1));
+      if(overlap){
+        const ns = x.start < start ? x.start : start;
+        const ne = x.end > end ? x.end : end;
+        if(ns.getTime() !== start.getTime() || ne.getTime() !== end.getTime()) changed = true;
+        start = ns; end = ne;
+      }
+    });
+  }
+  const targetIds = new Set();
+  events.forEach(e => {
+    if(e.skuId !== ev.skuId) return;
+    if(e.eventType !== ev.eventType || e.name !== ev.name || (e.discount || '') !== (ev.discount || '') || (e.note || '') !== (ev.note || '')) return;
+    const s = parseDate(e.startDate), t = parseDate(e.endDate || e.startDate);
+    if(isNaN(s) || isNaN(t)) return;
+    if(!(t < start || s > end)) targetIds.add(e.id);
+  });
+  if(!targetIds.size){ toast('⚠️ 未找到可删除的连续活动区间'); return; }
+  if(!confirm(`确定删除「${ev.name}」的连续活动区间（${dateStr(start)} ~ ${dateStr(end)}）吗？`)) return;
+  events = events.filter(e => !targetIds.has(e.id));
+  rebuildConflictIndex();
+  save(); buildCalendar(); updateStats();
+  toast(`🗑 已删除连续活动区间（${dateStr(start)} ~ ${dateStr(end)}）`);
+};
+
+// ══════════════════════════════════════════════════════
+//  统计
+// ══════════════════════════════════════════════════════
+function updateStats(){
+  document.getElementById('s-total').textContent = events.length;
+  const allDays = new Set();
+  events.forEach(e => {
+    const s = parseDate(e.startDate), t = parseDate(e.endDate || e.startDate);
+    for(let d = new Date(s); d <= t; d = addDays(d,1)) allDays.add(dateStr(d));
+  });
+  document.getElementById('s-days').textContent = allDays.size;
+  const skus = getSkuNodes();
+  document.getElementById('s-skus').textContent = skus.length;
+  const anchor = todayStr();
+  document.getElementById('s-over').textContent = skus.filter(s => calc90Days(s.id, anchor) >= 45).length;
+}
+
+window.setAnchorToday = function(){
+  document.getElementById('anchor-date').value = todayStr();
+  renderStatusCards();
+};
+document.addEventListener('input', (e) => {
+  if(e.target && e.target.id === 'anchor-date') renderStatusCards();
+});
+window.openSkuStatusDetail = function(skuId){
+  const sku = nodes.find(n => n.id === skuId && n.level === 'sku');
+  if(!sku) return;
+  const anchor = document.getElementById('anchor-date').value || todayStr();
+  const cnt = calc90Days(sku.id, anchor);
+  const st = getSkuStatus(cnt);
+  if(st === 'safe') return;
+  const merged = mergeSkuActivities(sku.id);
+  const path = escHtml(getNodePath(sku.id).join(' › '));
+  const recoveryDate = st === 'over' ? getRecoveryDate(sku.id, anchor) : null;
+  const rows = merged.map(ev => {
+    const typeLabel = ev.eventType && EVENT_TYPES[ev.eventType] ? EVENT_TYPES[ev.eventType].name : (ev.eventType || '—');
+    const days = daysBetween(ev.startDate, ev.endDate || ev.startDate) + 1;
+    return `<tr>
+      <td style="padding:8px 10px;border:1px solid #d2d2d7">${escHtml(typeLabel)}</td>
+      <td style="padding:8px 10px;border:1px solid #d2d2d7">${escHtml(ev.name || '—')}</td>
+      <td style="padding:8px 10px;border:1px solid #d2d2d7">${escHtml(ev.discount || '—')}</td>
+      <td style="padding:8px 10px;border:1px solid #d2d2d7">${escHtml(ev.startDate)}</td>
+      <td style="padding:8px 10px;border:1px solid #d2d2d7">${escHtml(ev.endDate || ev.startDate)}</td>
+      <td style="padding:8px 10px;border:1px solid #d2d2d7">${days}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" style="padding:10px;border:1px solid #d2d2d7;text-align:center;color:#86868b">暂无活动</td></tr>';
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">SKU</span><span class="detail-val"><b>${escHtml(sku.name)}</b></span></div>
+    <div class="detail-row"><span class="detail-label">路径</span><span class="detail-val" style="font-size:.75rem;color:#a0aec0">${path}</span></div>
+    ${recoveryDate ? `<div class="detail-row"><span class="detail-label">可恢复日期</span><span class="detail-val"><b style="color:#8a5a00">${formatReadableDate(recoveryDate)}</b></span></div>` : ''}
+    <div style="margin-top:12px;max-height:360px;overflow:auto;border:1px solid #e5e7eb;border-radius:10px">
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+        <thead><tr style="background:#f8f8f9">
+          <th style="padding:8px 10px;border:1px solid #d2d2d7">活动类型</th>
+          <th style="padding:8px 10px;border:1px solid #d2d2d7">活动名称</th>
+          <th style="padding:8px 10px;border:1px solid #d2d2d7">折扣力度</th>
+          <th style="padding:8px 10px;border:1px solid #d2d2d7">开始时间</th>
+          <th style="padding:8px 10px;border:1px solid #d2d2d7">结束时间</th>
+          <th style="padding:8px 10px;border:1px solid #d2d2d7">活动天数</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  document.getElementById('detail-del-btn').style.display = 'none';
+  document.getElementById('modal-detail').style.display = 'flex';
+};
+
+window.renderStatusCards = function(){
+  const anchor = document.getElementById('anchor-date').value || todayStr();
+  const skus   = getSkuNodes();
+  const el     = document.getElementById('status-grid');
+  if(skus.length === 0){
+    el.innerHTML = '<div style="color:#a0aec0;font-size:.85rem;padding:16px">暂无SKU，请先在「产品管理」中添加</div>';
+    return;
+  }
+  el.innerHTML = skus.map(sku => {
+    const cnt  = calc90Days(sku.id, anchor);
+    const st   = getSkuStatus(cnt);
+    const barW = Math.min(cnt / 45 * 100, 100);
+    const path = getNodePath(sku.id);
+    const recoveryDate = st === 'over' ? getRecoveryDate(sku.id, anchor) : null;
+    return `<div class="status-card ${st}" data-sku-id="${sku.id}" ${st === 'safe' ? '' : `onclick="openSkuStatusDetail('${sku.id}')"`} style="cursor:${st === 'safe' ? 'default' : 'pointer'}">
+      <div class="sc-path">${escHtml(path.slice(0,-1).join(' › '))}</div>
+      <div class="sc-name">${escHtml(sku.name)}</div>
+      <div class="sc-bar-wrap"><div class="sc-bar ${st}" style="width:${barW}%"></div></div>
+      <div class="sc-nums"><span>${cnt} 天已用</span><span>上限 45 天</span></div>
+      ${recoveryDate ? `<div class="sc-recovery" style="margin-top:8px;padding:8px 10px;border-radius:8px;background:#fff8d6;border:1px solid #f5d565;font-size:.75rem;color:#8a5a00;line-height:1.5">可恢复排期日期：<b>${formatReadableDate(recoveryDate)}</b></div>` : ''}
+      <div class="sc-status ${st}">${STATUS_LABEL[st]}</div>
+    </div>`;
+  }).join('');
+};
+
+// ══════════════════════════════════════════════════════
+//  查询
+// ══════════════════════════════════════════════════════
+let cascadeQuerySkuId = null;
+function buildCascadeQuery(){
+  const container = document.getElementById('cascade-query');
+  if(!container) return;
+  container.innerHTML = '';
+  cascadeQuerySkuId = null;
+  _buildCascadeLevel(container, null, 0);
+}
+function _buildCascadeLevel(container, parentId, depth){
+  const children = getChildren(parentId);
+  if(children.length === 0) return;
+  const sel = document.createElement('select');
+  sel.style.cssText = 'font-size:.8rem;padding:6px 10px;min-width:100px;max-width:140px;height:30px;border:1px solid #d2d2d7;border-radius:8px;background:#f9f9f9';
+  const labels = ['全部品牌','全部种类','全部链接','全部SKU'];
+  sel.innerHTML = `<option value="">${labels[depth] || '全部'}</option>`
+    + children.map(n => `<option value="${n.id}">${escHtml(n.name)}</option>`).join('');
+  sel.addEventListener('change', () => {
+    while(sel.nextSibling) container.removeChild(sel.nextSibling);
+    cascadeQuerySkuId = null;
+    const val = sel.value;
+    if(!val){ runQuery(); return; }
+    const node = nodes.find(n => n.id === val);
+    if(node && node.level === 'sku'){ cascadeQuerySkuId = val; runQuery(); }
+    else { _buildCascadeLevel(container, val, depth + 1); runQuery(); }
+  });
+  container.appendChild(sel);
+}
+
+window.runQuery = function(){
+  const qDate = document.getElementById('q-date').value;
+  const qDays = parseInt(document.getElementById('q-days').value) || 90;
+  const el    = document.getElementById('q-result');
+  if(!qDate){ el.innerHTML = '<span style="color:#a0aec0;font-size:.85rem">选择日期 → 统计活动天数</span>'; return; }
+  const skuIds = cascadeQuerySkuId ? [cascadeQuerySkuId] : getSkuNodes().map(n => n.id);
+  const anchor   = parseDate(qDate);
+  const winStart = addDays(anchor, -(qDays - 1));
+  const activeDays = new Set();
+  events.filter(e => skuIds.includes(e.skuId)).forEach(e => {
+    const s = parseDate(e.startDate), t = parseDate(e.endDate || e.startDate);
+    const os = s < winStart ? winStart : s;
+    const oe = t > anchor ? anchor : t;
+    for(let d = new Date(os); d <= oe; d = addDays(d,1)) activeDays.add(dateStr(d));
+  });
+  const cnt  = activeDays.size;
+  const pct  = Math.round(cnt / qDays * 100);
+  const st   = qDays === 90 ? getSkuStatus(cnt) : 'safe';
+  const stColor = STATUS_COLOR[st];
+  el.innerHTML = `<span class="big-num" style="color:${stColor}">${cnt}</span>
+    <div>
+      <div style="font-weight:600;font-size:.9rem">&nbsp;天有活动 <span style="font-size:.75rem;color:#a0aec0">(${pct}%)</span></div>
+      <div style="font-size:.7rem;color:#a0aec0;margin-top:4px">&nbsp;${qDate}前${qDays}天</div>
+      ${qDays === 90 && st !== 'safe' ? `<div style="font-size:.75rem;color:${stColor};font-weight:600;margin-top:4px">&nbsp;${STATUS_LABEL[st]}</div>` : ''}
+    </div>`;
+};
+
+function renderProdStats(){
+  const el   = document.getElementById('prod-stats-tbl');
+  const skus = getSkuNodes();
+  if(skus.length === 0){ el.innerHTML = '<div style="color:#a0aec0;font-size:.85rem;padding:16px">暂无数据</div>'; return; }
+  const anchor = todayStr();
+  const keyword = (document.getElementById('sku-search')?.value || '').trim().toLowerCase();
+  const list = keyword ? skus.filter(sku => getNodePath(sku.id).join(' › ').toLowerCase().includes(keyword) || sku.name.toLowerCase().includes(keyword)) : skus;
+  if(list.length === 0){
+    el.innerHTML = '<div style="color:#a0aec0;font-size:.85rem;padding:16px">未找到匹配的SKU，请修改搜索词</div>';
+    return;
+  }
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+    <thead><tr style="background:#f7fafc">
+      <th style="padding:8px 12px;text-align:left;border:1px solid #d2d2d7">SKU路径</th>
+      <th style="padding:8px 12px;text-align:center;border:1px solid #d2d2d7;font-size:.75rem">活动数</th>
+      <th style="padding:8px 12px;text-align:center;border:1px solid #d2d2d7;font-size:.75rem">90天活动天数</th>
+      <th style="padding:8px 12px;text-align:center;border:1px solid #d2d2d7;font-size:.75rem">状态</th>
+      <th style="padding:8px 12px;text-align:center;border:1px solid #d2d2d7;font-size:.75rem">最近活动</th>
+    </tr></thead><tbody>
+    ${list.map(sku => {
+      const path  = getNodePath(sku.id);
+      const color = getNodeColor(sku.id);
+      const evs   = events.filter(e => e.skuId === sku.id);
+      const cnt   = calc90Days(sku.id, anchor);
+      const st    = getSkuStatus(cnt);
+      const latest = evs.length ? [...evs].sort((a,b) => b.startDate.localeCompare(a.startDate))[0].startDate : '—';
+      return `<tr>
+        <td style="padding:8px 12px;border:1px solid #d2d2d7">
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${color};margin-right:6px"></span>
+          ${escHtml(path.join(' › '))}
+        </td>
+        <td style="padding:8px 12px;border:1px solid #d2d2d7;text-align:center;font-weight:600">${evs.length}</td>
+        <td style="padding:8px 12px;border:1px solid #d2d2d7;text-align:center">
+          <div style="display:flex;align-items:center;gap:6px;justify-content:center">
+            <div style="background:#e2e8f0;border-radius:3px;height:5px;width:60px;overflow:hidden">
+              <div style="width:${Math.min(cnt/45*100,100)}%;height:5px;background:${STATUS_COLOR[st]};border-radius:3px"></div>
+            </div>
+            <b style="color:${STATUS_COLOR[st]}">${cnt}</b>
+          </div>
+        </td>
+        <td style="padding:8px 12px;border:1px solid #d2d2d7;text-align:center">
+          <span style="color:${STATUS_COLOR[st]};font-weight:600;font-size:.75rem">${STATUS_LABEL[st]}</span>
+        </td>
+        <td style="padding:8px 12px;border:1px solid #d2d2d7;text-align:center;color:#86868b">${latest}</td>
+      </tr>`;
+    }).join('')}
+    </tbody></table>`;
+}
+
+window.searchSkuStats = function(){
+  renderProdStats();
+};
+window.clearSkuSearch = function(){
+  const el = document.getElementById('sku-search');
+  if(el) el.value = '';
+  renderProdStats();
+};
+
+function rebuildFilterDropdowns(){
+  const brands = getChildren(null).filter(n => n.level === 'brand');
+  fillSelect('f-brand', brands, '全部品牌', filters.brand);
+  const cats = filters.brand
+    ? getChildren(filters.brand).filter(n => n.level === 'category')
+    : nodes.filter(n => n.level === 'category');
+  fillSelect('f-cat', cats, '全部种类', filters.cat);
+  const links = filters.cat
+    ? getChildren(filters.cat).filter(n => n.level === 'link')
+    : filters.brand
+      ? nodes.filter(n => n.level === 'link' && getAncestors(n.id).some(a => a.id === filters.brand))
+      : nodes.filter(n => n.level === 'link');
+  fillSelect('f-link', links, '全部链接', filters.link);
+  const skus = filters.link
+    ? getChildren(filters.link).filter(n => n.level === 'sku')
+    : filters.cat
+      ? nodes.filter(n => n.level === 'sku' && getAncestors(n.id).some(a => a.id === filters.cat))
+      : filters.brand
+        ? nodes.filter(n => n.level === 'sku' && getAncestors(n.id).some(a => a.id === filters.brand))
+        : getSkuNodes();
+  fillSelect('f-sku', skus, '全部SKU', filters.sku);
+}
+function fillSelect(id, items, placeholder, selectedVal){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = `<option value="">${placeholder}</option>`
+    + items.map(n => `<option value="${n.id}"${n.id === selectedVal ? ' selected' : ''}>${escHtml(n.name)}</option>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  Tab切换
+// ══════════════════════════════════════════════════════
+window.switchTab = function(tab){
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['calendar','stats','products'][i] === tab));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  if(tab === 'stats')    { updateStats(); renderStatusCards(); renderProdStats(); buildCascadeQuery(); }
+  if(tab === 'products') { renderCatTree(); buildParentCascade(0); }
+  if(tab === 'stats') { const s = document.getElementById('sku-search'); if(s) s.focus(); }
+};
+
+// ══════════════════════════════════════════════════════
+//  视图切换
+// ══════════════════════════════════════════════════════
+window.toggleView = function(){
+  buildCalendar();
+  setTimeout(() => {
+    scrollToJumpDate();
+    markJumpDate();
+  }, 50);
+};
+
+// ══════════════════════════════════════════════════════
+//  批量导入SKU
+// ══════════════════════════════════════════════════════
+window.openBatchModal = function(){
+  document.getElementById('batch-input').value = '';
+  document.getElementById('batch-preview').innerHTML = '';
+  document.getElementById('modal-batch').style.display = 'flex';
+  setTimeout(() => document.getElementById('batch-input').focus(), 100);
+};
+window.closeBatchModal = function(){
+  document.getElementById('modal-batch').style.display = 'none';
+};
+
+function parseBatchInput(){
+  const lines = document.getElementById('batch-input').value
+    .split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+  const rows = [], errors = [];
+  lines.forEach((line, i) => {
+    const parts = line.includes('\t') ? line.split('\t') : line.split(',');
+    if(parts.length < 4){ errors.push(`第${i+1}行需要4列：${line}`); return; }
+    const [brand, category, link, sku] = parts.map(p => p.trim());
+    if(!brand || !category || !link || !sku){ errors.push(`第${i+1}行有空字段`); return; }
+    rows.push({brand, category, link, sku});
+  });
+  return {rows, errors};
+}
+
+function getOrCreateNode(name, level, parentId, color){
+  const existing = nodes.find(n => n.level === level && n.name === name && (n.parentId||null) === (parentId||null));
+  if(existing) return existing.id;
+  const node = {id: uid(), parentId: parentId||null, level, name, color};
+  nodes.push(node);
+  return node.id;
+}
+
+window.previewBatch = function(){
+  const {rows, errors} = parseBatchInput();
+  let html = '';
+  if(errors.length) html += `<div style="color:#ff3b30;margin-bottom:8px">${errors.map(e => `⚠️ ${escHtml(e)}`).join('<br/>')}</div>`;
+  if(rows.length){
+    html += `<div style="color:#34c759;font-weight:600;margin-bottom:6px">✅ 解析成功 ${rows.length} 条</div>`;
+    html += `<div style="max-height:120px;overflow-y:auto;border:1px solid #d2d2d7;border-radius:8px;padding:8px">`;
+    rows.forEach(r => {
+      html += `<div style="font-size:.75rem;color:#4a5568;padding:3px 0;border-bottom:1px solid #f0f4f8">
+        ${escHtml(r.brand)} › ${escHtml(r.category)} › ${escHtml(r.link)} › <b>${escHtml(r.sku)}</b></div>`;
+    });
+    html += '</div>';
+  }
+  if(!errors.length && !rows.length) html = '<div style="color:#a0aec0">没有可解析的内容</div>';
+  document.getElementById('batch-preview').innerHTML = html;
+};
+
+window.confirmBatch = function(){
+  const {rows, errors} = parseBatchInput();
+  if(!rows.length){ toast('⚠️ 没有可导入的数据，请检查格式'); return; }
+  const colors = ['#0071e3','#34c759','#805ad5','#ff9500','#ff3b30','#38b2ac','#d69e2e','#667eea'];
+  let newCount = 0;
+  rows.forEach((r, i) => {
+    const color   = colors[i % colors.length];
+    const brandId = getOrCreateNode(r.brand,    'brand',    null,    color);
+    const catId   = getOrCreateNode(r.category, 'category', brandId, color);
+    const linkId  = getOrCreateNode(r.link,     'link',     catId,   color);
+    const exists  = nodes.find(n => n.level === 'sku' && n.name === r.sku && n.parentId === linkId);
+    if(!exists){ getOrCreateNode(r.sku, 'sku', linkId, color); newCount++; }
+  });
+  save(); closeBatchModal(); renderCatTree(); rebuildFilterDropdowns(); buildCalendar();
+  toast(`✅ 导入完成：新增 ${newCount} 个SKU，共处理 ${rows.length} 条`);
+};
+
+// ══════════════════════════════════════════════════════
+//  Excel上传导入
+// ══════════════════════════════════════════════════════
+window.handleExcelUpload = function(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, {type: 'array'});
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1, defval: ''});
+      const rows = [], errors = [];
+      jsonData.forEach((row, i) => {
+        if(!Array.isArray(row) || row.length < 4) return;
+        const [brand, category, link, sku] = row.map(c => String(c || '').trim());
+        if(!brand || !category || !link || !sku){ errors.push(`第${i+1}行有空字段`); return; }
+        rows.push({brand, category, link, sku});
+      });
+      if(!rows.length){ toast('⚠️ 未解析到有效数据，请检查表格格式'); return; }
+      const colors = ['#0071e3','#34c759','#805ad5','#ff9500','#ff3b30','#38b2ac','#d69e2e','#667eea'];
+      let newCount = 0;
+      rows.forEach((r, i) => {
+        const color   = colors[i % colors.length];
+        const brandId = getOrCreateNode(r.brand,    'brand',    null,    color);
+        const catId   = getOrCreateNode(r.category, 'category', brandId, color);
+        const linkId  = getOrCreateNode(r.link,     'link',     catId,   color);
+        const exists  = nodes.find(n => n.level === 'sku' && n.name === r.sku && n.parentId === linkId);
+        if(!exists){ getOrCreateNode(r.sku, 'sku', linkId, color); newCount++; }
+      });
+      resolveSkuDayConflicts();
+      save(); renderCatTree(); rebuildFilterDropdowns(); buildCalendar(); updateStats();
+      const previewHtml = `<div style="color:#34c759;font-weight:600;margin-top:8px">✅ 表格导入完成：新增 ${newCount} 个SKU，共 ${rows.length} 条，${errors.length ? errors.length + ' 条错误' : ''}</div>`;
+      document.getElementById('upload-result').innerHTML = previewHtml;
+      toast(`✅ 表格导入完成：新增 ${newCount} 个SKU`);
+    } catch(err){
+      toast('❌ 表格解析失败：' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  event.target.value = '';
+};
+
+function parseMatrixImport(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const data = new Uint8Array(ev.target.result);
+        const workbook = XLSX.read(data, {type:'array'});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const matrix = XLSX.utils.sheet_to_json(sheet, {header:1, defval:''});
+        if(!matrix.length) throw new Error('表格为空');
+
+        const detectHeaderRow = () => {
+          let best = { idx: 0, hits: 0, cols: [] };
+          const maxScanRows = Math.min(matrix.length, 5);
+          for(let r = 0; r < maxScanRows; r++){
+            const row = matrix[r] || [];
+            const cols = [];
+            for(let c = 1; c < row.length; c++){
+              const ds = parseAnyDate(row[c]);
+              if(ds) cols.push({col:c, date:ds, raw:row[c]});
+            }
+            if(cols.length > best.hits) best = { idx: r, hits: cols.length, cols };
+          }
+          return best;
+        };
+
+        const headerInfo = detectHeaderRow();
+        if(!headerInfo.cols.length) throw new Error('未识别到日期列，请确认第一行是日期表头，且日期从第二列开始');
+        const dateCols = headerInfo.cols;
+        const items = [];
+        const unmatched = [];
+        const anomalies = [];
+        const skuIndex = new Map();
+        getSkuNodes().forEach(s => skuIndex.set(normalizeSkuKey(s.name), s));
+        for(let r = headerInfo.idx + 1; r < matrix.length; r++){
+          const row = matrix[r] || [];
+          const skuRaw = String(row[0] || '').trim();
+          if(!skuRaw) continue;
+          const skuNorm = normalizeSkuKey(skuRaw);
+          const skuNode = skuIndex.get(skuNorm);
+          if(!skuNode){
+            unmatched.push({skuRaw, row:r+1, items: []});
+            continue;
+          }
+          const segments = [];
+          let cur = null;
+          for(const dc of dateCols){
+            const val = String(row[dc.col] || '').trim();
+            if(!val){
+              if(cur){ segments.push(cur); cur = null; }
+              continue;
+            }
+            const meta = getActivityMeta(val);
+            if(!cur || cur.type !== meta.type || cur.name !== meta.name){
+              if(cur) segments.push(cur);
+              cur = { skuId: skuNode.id, skuName: skuNode.name, type: meta.type, name: meta.name, discount: meta.discount, startDate: dc.date, endDate: dc.date, raw: val };
+            } else {
+              cur.endDate = dc.date;
+            }
+          }
+          if(cur) segments.push(cur);
+          segments.forEach(seg => items.push(seg));
+        }
+        resolve({items, unmatched, anomalies, dateCount: dateCols.length, skuCount: matrix.length - (headerInfo.idx + 1), headerRow: headerInfo.idx + 1});
+      } catch(err){ reject(err); }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function renderMatrixPreview(payload){
+  const el = document.getElementById('matrix-preview');
+  if(!payload){ el.innerHTML = ''; return; }
+  const {items, unmatched, anomalies, dateCount, skuCount, headerRow} = payload;
+  el.innerHTML = `
+    <div style="margin-bottom:10px;color:#1d1d1f;font-weight:600">预览结果</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:10px">
+      <div style="background:#f8f8f9;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px">表头行：<b>${headerRow}</b></div>
+      <div style="background:#f8f8f9;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px">日期列数：<b>${dateCount}</b></div>
+      <div style="background:#f8f8f9;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px">活动记录：<b>${items.length}</b></div>
+      <div style="background:#f8f8f9;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px">未匹配SKU：<b>${unmatched.length}</b></div>
+    </div>
+    <div style="max-height:180px;overflow:auto;border:1px solid #e5e7eb;border-radius:8px;padding:8px;background:#fff">
+      ${items.slice(0,30).map(it => `<div style="padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:.78rem">${escHtml(it.skuName)} ｜ ${escHtml(it.type)} ｜ ${it.startDate} ~ ${it.endDate} ｜ ${escHtml(it.name)}</div>`).join('')}
+      ${unmatched.map(u => `<div style="padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:.78rem;color:#d97706">未匹配：第${u.row}行 ${escHtml(u.skuRaw)}</div>`).join('')}
+      ${anomalies.map(a => `<div style="padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:.78rem;color:#dc2626">异常：${escHtml(a)}</div>`).join('')}
+    </div>`;
+}
+
+window.handleMatrixUpload = async function(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  try{
+    pendingMatrixImport = await parseMatrixImport(file);
+    renderMatrixPreview(pendingMatrixImport);
+    toast(`✅ 预览完成：${pendingMatrixImport.items.length} 条活动记录`);
+  } catch(err){
+    toast('❌ 解析失败：' + err.message);
+  }
+  event.target.value = '';
+};
+
+window.previewMatrixImport = async function(){
+  const fileEl = document.getElementById('matrix-upload');
+  const file = fileEl.files[0];
+  if(!file){ toast('⚠️ 请先选择文件'); return; }
+  try{
+    pendingMatrixImport = await parseMatrixImport(file);
+    renderMatrixPreview(pendingMatrixImport);
+    toast(`✅ 预览完成：${pendingMatrixImport.items.length} 条活动记录`);
+  } catch(err){
+    toast('❌ 解析失败：' + err.message);
+  }
+};
+
+window.confirmMatrixImport = function(){
+  if(!pendingMatrixImport){ toast('⚠️ 请先预览导入结果'); return; }
+  const {items} = pendingMatrixImport;
+  if(!items.length){ toast('⚠️ 没有可导入的活动记录'); return; }
+  const merged = mergeImportSegments(items);
+  upsertMergedActivities(merged);
+  resolveSkuDayConflicts();
+  save(); rebuildFilterDropdowns(); buildCalendar(); updateStats(); renderStatusCards(); renderProdStats();
+  toast(`✅ 矩阵导入完成：已合并 ${merged.length} 条活动区间`);
+  closeMatrixImportModal();
+};
+
+// ══════════════════════════════════════════════════════
+//  导出 / 导入
+// ══════════════════════════════════════════════════════
+window.exportData = function(){
+  const data = {version: 4, exportedAt: new Date().toISOString(), nodes, events};
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `亚马逊排期_${todayStr()}.json`;
+  a.click();
+  toast('✅ 已导出JSON文件');
+};
+
+window.exportScheduleAsExcel = function(){
+  if(events.length === 0){ toast('⚠️ 暂无活动数据可导出'); return; }
+  const exportData = events.map(e => {
+    const sku  = nodes.find(n => n.id === e.skuId);
+    const path = getNodePath(e.skuId);
+    const days = daysBetween(e.startDate, e.endDate || e.startDate) + 1;
+    const typeLabel = e.eventType && EVENT_TYPES[e.eventType] ? EVENT_TYPES[e.eventType].name : '';
+    return {
+      '活动类型': typeLabel,
+      '活动名称': e.name,
+      '品牌': path[0] || '',
+      '种类': path[1] || '',
+      '链接': path[2] || '',
+      'SKU': sku ? sku.name : '',
+      '开始日期': e.startDate,
+      '结束日期': e.endDate || e.startDate,
+      '活动天数': days,
+      '折扣力度': e.discount || '',
+      '备注': e.note || '',
+      '操作人': e.operator || '',
+      '提醒': e.reminder !== false ? '是' : '否'
+    };
+  });
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  ws['!cols'] = [
+    {wch: 10},{wch: 20},{wch: 12},{wch: 12},{wch: 14},{wch: 18},
+    {wch: 12},{wch: 12},{wch: 10},{wch: 12},{wch: 20},{wch: 10},{wch: 8}
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '活动排期');
+  XLSX.writeFile(wb, `亚马逊活动排期_${todayStr()}.xlsx`);
+  toast('✅ 已导出活动排期表格');
+};
+
+window.openImportModal  = function(){ document.getElementById('modal-import').style.display = 'flex'; };
+window.closeImportModal = function(){ document.getElementById('modal-import').style.display = 'none'; };
+window.updateImportOpts = function(){
+  importMode = document.querySelector('input[name="import-mode"]:checked').value;
+  document.getElementById('opt-merge-label').classList.toggle('checked', importMode === 'merge');
+  document.getElementById('opt-overwrite-label').classList.toggle('checked', importMode === 'overwrite');
+  document.getElementById('import-mode-desc').textContent = importMode === 'merge'
+    ? '合并模式：适合多人协作，将同事的排期合并到你的文件中，相同ID的数据会跳过'
+    : '覆盖模式：清空现有所有数据，完全替换为导入文件的内容，请谨慎操作';
+};
+window.openMatrixImportModal = function(){
+  pendingMatrixImport = null;
+  document.getElementById('matrix-preview').innerHTML = '';
+  document.getElementById('modal-matrix-import').style.display = 'flex';
+};
+window.closeMatrixImportModal = function(){
+  document.getElementById('modal-matrix-import').style.display = 'none';
+};
+window.doImport = function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const data = JSON.parse(ev.target.result);
+      if(!data.nodes || !data.events) throw new Error('文件格式不正确');
+      closeImportModal();
+      if(importMode === 'overwrite'){
+        if(!confirm(`覆盖模式：将清空现有 ${events.length} 个活动和 ${nodes.length} 个节点，确定？`)) return;
+        nodes = data.nodes; events = data.events;
+        resolveSkuDayConflicts();
+        toast(`✅ 覆盖导入成功：${events.length}个活动`);
+      } else {
+        const existNodeIds = new Set(nodes.map(n => n.id));
+        const existEvIds   = new Set(events.map(e => e.id));
+        const newNodes = data.nodes.filter(n => !existNodeIds.has(n.id));
+        const newEvs   = data.events.filter(e => !existEvIds.has(e.id));
+        nodes  = [...nodes,  ...newNodes];
+        events = [...events, ...newEvs];
+        resolveSkuDayConflicts();
+        events.sort((a,b) => a.startDate.localeCompare(b.startDate));
+        toast(`✅ 合并导入：新增 ${newNodes.length} 个节点，${newEvs.length} 个活动`);
+      }
+      save(); rebuildFilterDropdowns(); buildCalendar(); updateStats();
+    } catch(err){ toast('❌ 导入失败：' + err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+};
+
+// ══════════════════════════════════════════════════════
+//  快速添加产品（日历点击无产品时）
+// ══════════════════════════════════════════════════════
+window.openQuickAddModalWithSku = function(skuId, dateStr){
+  document.getElementById('quick-brand').value     = '';
+  document.getElementById('quick-category').value  = '';
+  document.getElementById('quick-link').value      = '';
+  document.getElementById('quick-sku').value       = '';
+  document.getElementById('quick-event-type').value = 'coupon';
+  document.getElementById('quick-event-name').value = '';
+  document.getElementById('quick-end-date').value   = dateStr;
+  document.getElementById('quick-reminder').checked  = true;
+  selectedCell = { skuId, date: dateStr };
+  document.getElementById('modal-quick-add').style.display = 'flex';
+  setTimeout(() => document.getElementById('quick-brand').focus(), 100);
+};
+
+window.closeQuickAddModal = function(){
+  document.getElementById('modal-quick-add').style.display = 'none';
+};
+
+window.confirmQuickAdd = function(){
+  const brand    = document.getElementById('quick-brand').value.trim();
+  const category = document.getElementById('quick-category').value.trim();
+  const link     = document.getElementById('quick-link').value.trim();
+  const sku      = document.getElementById('quick-sku').value.trim();
+  const eventType = document.getElementById('quick-event-type').value;
+  const eventName = document.getElementById('quick-event-name').value.trim();
+  const endDate   = document.getElementById('quick-end-date').value;
+  const reminder  = document.getElementById('quick-reminder').checked;
+  if(!brand || !category || !link || !sku){ toast('⚠️ 请填写完整的品牌、种类、链接、SKU'); return; }
+  if(!eventName){ toast('⚠️ 请输入活动名称'); return; }
+  const colors = ['#0071e3','#34c759','#805ad5','#ff9500','#ff3b30'];
+  const color   = colors[Math.floor(Math.random() * colors.length)];
+  const brandId = getOrCreateNode(brand,    'brand',    null,     color);
+  const catId   = getOrCreateNode(category, 'category', brandId,  color);
+  const linkId  = getOrCreateNode(link,     'link',     catId,    color);
+  let skuNode   = nodes.find(n => n.level === 'sku' && n.name === sku && n.parentId === linkId);
+  if(!skuNode){ skuNode = {id: uid(), parentId: linkId, level: 'sku', name: sku, color}; nodes.push(skuNode); }
+  const startDate = selectedCell ? selectedCell.date : todayStr();
+  const ev = { id: uid(), skuId: skuNode.id, eventType, name: eventName, discount: '', note: '', operator: localStorage.getItem('aps_user')||'匿名', startDate: startDate, endDate: endDate || startDate, reminder, createdAt: new Date().toISOString() };
+  events.push(ev);
+  resolveSkuDayConflicts();
+  events.sort((a,b) => a.startDate.localeCompare(b.startDate));
+  save();
+  closeQuickAddModal();
+  renderCatTree(); rebuildFilterDropdowns(); buildCalendar(); updateStats();
+  toast(`✅ 已快速添加「${eventName}」并创建产品`);
+  if(reminder) setupReminder(ev);
+};
+
+// ══════════════════════════════════════════════════════
+//  提醒功能
+// ══════════════════════════════════════════════════════
+function setupReminder(ev){
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'granted') scheduleReminder(ev);
+  else if(Notification.permission !== 'denied'){
+    Notification.requestPermission().then(p => { if(p === 'granted') scheduleReminder(ev); });
+  }
+}
+
+function scheduleReminder(ev){
+  const startDate = parseDate(ev.startDate);
+  const now = new Date();
+  const msUntilStart = startDate.getTime() - now.getTime();
+  if(msUntilStart <= 0) return;
+  const oneDayMs = 86400000;
+  let reminderMs = msUntilStart - oneDayMs;
+  if(reminderMs <= 0) reminderMs = Math.max(msUntilStart - 3600000, 10000);
+  setTimeout(() => {
+    const sku = nodes.find(n => n.id === ev.skuId);
+    new Notification('活动提醒', {
+      body: `「${ev.name}」即将在 ${ev.startDate} 开始\nSKU: ${sku ? sku.name : '未知'}`,
+      icon: '📅',
+      tag: ev.id
+    });
+  }, reminderMs);
+}
+
+function setupAllReminders(){
+  if(!('Notification' in window)) return;
+  const now = new Date();
+  events.filter(e => e.reminder !== false && parseDate(e.startDate) > now)
+    .forEach(e => scheduleReminder(e));
+}
+
+// ══════════════════════════════════════════════════════
+//  键盘快捷键
+// ══════════════════════════════════════════════════════
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.modal-mask').forEach(m => m.style.display = 'none');
+  }
+});
+
+// ══════════════════════════════════════════════════════
+//  工具函数
+// ══════════════════════════════════════════════════════
+function escHtml(s = ''){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function normalizeText(s){
+  return String(s || '')
+    .normalize('NFKC')
+    .replace(/\u3000/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+function normalizeSkuKey(s){ return normalizeText(s).replace(/[\s\-_—–·•/\\()（）【】\[\]{}。，,.]/g, ''); }
+function parseAnyDate(v){
+  if(v instanceof Date && !isNaN(v)) return dateStr(v);
+  if(typeof v === 'number' && isFinite(v)){
+    const dc = XLSX.SSF.parse_date_code(v);
+    if(dc) return dateStr(new Date(dc.y, dc.m - 1, dc.d));
+  }
+  const s = String(v || '').trim();
+  if(!s) return '';
+  if(/^[0-9]{4}[-\/][0-9]{1,2}[-\/][0-9]{1,2}$/.test(s)) return dateStr(new Date(s.replace(/\//g,'-') + 'T00:00:00'));
+  if(/^[0-9]{4}[\/.][0-9]{1,2}[\/.][0-9]{1,2}$/.test(s)) return dateStr(new Date(s.replace(/[\.\/]/g,'-') + 'T00:00:00'));
+  const d = new Date(s);
+  return isNaN(d) ? '' : dateStr(d);
+}
+function getActivityMeta(type){
+  const raw = String(type || '').trim();
+  const t = normalizeText(raw);
+  if(['coupon','优惠券','券'].includes(t)) return { type:'coupon', name:'Coupon', discount:'' };
+  if(['春季大促','basic promo','promo basic','春季促销'].includes(t)) return { type:'promo_basic', name:'春季大促', discount:'' };
+  if(['prime大促bd','prime bd','prime大促','prime day bd'].includes(t)) return { type:'prime_bd', name:'Prime大促BD', discount:'' };
+  if(['bd','秒杀','促销'].includes(t)) return { type:'bd', name:'BD', discount:'' };
+  if(['ld','限时折扣','闪购'].includes(t)) return { type:'ld', name:'LD', discount:'' };
+  if(['discount','折扣'].includes(t)) return { type:'discount', name:'Discount', discount:'' };
+  return { type: t || 'coupon', name: raw || 'Coupon', discount: '' };
+}
+function getEventColor(ev){
+  const type = String(ev?.eventType || ev?.type || '').trim();
+  if(EVENT_TYPES[type]) return EVENT_TYPES[type].color;
+  const meta = getActivityMeta(ev?.name || type);
+  return EVENT_TYPES[meta.type]?.color || EVENT_TYPES.coupon.color;
+}
+function expandEventToDayMap(ev){
+  const days = [];
+  const start = parseDate(ev.startDate);
+  const end = parseDate(ev.endDate || ev.startDate);
+  if(isNaN(start) || isNaN(end)) return days;
+  for(let d = new Date(start); d <= end; d = addDays(d, 1)) days.push(dateStr(d));
+  return days;
+}
+function upsertEventsBySkuDay(incomingEvents){
+  if(!Array.isArray(incomingEvents) || !incomingEvents.length) return { inserted: 0, updated: 0 };
+  const latestByKey = new Map();
+  const incomingKeys = new Set();
+  incomingEvents.forEach(ev => {
+    expandEventToDayMap(ev).forEach(ds => {
+      const key = `${ev.skuId}|${ds}`;
+      incomingKeys.add(key);
+      latestByKey.set(key, {
+        id: ev.id || uid(),
+        skuId: ev.skuId,
+        eventType: ev.eventType,
+        name: ev.name,
+        discount: ev.discount || '',
+        note: ev.note || '',
+        operator: ev.operator || 'Excel导入',
+        startDate: ds,
+        endDate: ds,
+        reminder: ev.reminder !== false,
+        createdAt: ev.createdAt || new Date().toISOString(),
+      });
+    });
+  });
+  const kept = [];
+  events.forEach(ev => {
+    const hasOverlap = expandEventToDayMap(ev).some(ds => incomingKeys.has(`${ev.skuId}|${ds}`));
+    if(!hasOverlap) kept.push(ev);
+  });
+  events = kept.concat([...latestByKey.values()]);
+  events.sort((a,b) => a.startDate.localeCompare(b.startDate) || a.skuId.localeCompare(b.skuId));
+  return { inserted: latestByKey.size, updated: events.length - latestByKey.size };
+}
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ══════════════════════════════════════════════════════
+//  初始化
+// ══════════════════════════════════════════════════════
+load();
+const initToday = todayStr();
+calCenterDate = initToday;
+const jumpInput = document.getElementById('jump-date');
+if(jumpInput) jumpInput.value = initToday;
+document.getElementById('anchor-date').value = initToday;
+document.getElementById('timeline-granularity').value = timelineGranularity;
+rebuildConflictIndex();
+rebuildFilterDropdowns();
+buildCalendar();
+updateStats();
+setupAllReminders();
+renderProdStats();
+setTimeout(syncTimelineSticky, 0);
+const viewBtn = document.getElementById('view-toggle-btn');
+if(viewBtn) viewBtn.style.display = 'none';
+</script>
+</body>
+</html>
